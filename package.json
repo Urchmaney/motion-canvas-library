@@ -1,0 +1,20 @@
+{
+  "name": "motion-canvas-library",
+  "version": "1.0.0",
+  "description": "Motion Canvas library for custom components",
+  "main": "index.js",
+  "workspaces": [
+    "server",
+    "frontend"
+  ],
+  "scripts": {
+    "server": "npm run dev -w server",
+    "frontend": "npm run dev -w frontend",
+    "start": "concurrently \"npm run server\" \"npm run frontend\""
+  },
+  "author": "Unegbu Kingsley",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}
