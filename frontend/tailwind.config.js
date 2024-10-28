@@ -5,7 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'gray-sclae': "url('/src/assets/aluminum.jpg')"
+      }
+    },
   },
   plugins: [],
 }

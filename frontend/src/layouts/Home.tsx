@@ -1,13 +1,14 @@
 import { Link, Outlet } from "react-router-dom";
 import GithubIcon from "../components/icons/Github";
+import { MotionCanvasLibraryIcon } from "../components/icons";
 
 export default function HomeLayout() {
   return (
     <div>
-      <div className="container mx-auto">
+      <div className="container mx-auto px-2">
         <div className="py-3 flex justify-between sticky top-0">
           <div>
-            icon
+            <MotionCanvasLibraryIcon size={50} />
           </div>
           <div className="flex items-center gap-2">
             <Link to={`library`}>Library</Link>
