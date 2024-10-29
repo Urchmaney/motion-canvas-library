@@ -1,15 +1,14 @@
 export default function MotionCanvasLibraryIcon({ width, height, size }: { width?: number, height?: number, size?: number }) {
   return (
-    <svg width={size || width || 32} height={size || height || 32} viewBox="0 0 80 82" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-      <rect x="82.2466" y="44.6182" width="13.0741" height="57.1398" rx="2" transform="rotate(44.2015 82.2466 44.6182)" fill="black" />
-      <rect x="88.663" y="64" width="11.7634" height="35.3751" rx="3" transform="rotate(44.2015 88.663 64)" fill="black" />
-      <rect x="54.9243" y="16" width="33" height="13.784" rx="3" transform="rotate(46.0533 54.9243 16)" fill="#51C9E3" />
-      <rect x="25.9936" y="45" width="33" height="16.205" rx="4" transform="rotate(46.0533 25.9936 45)" fill="#FF2E2E" />
-      <rect x="25.9698" y="14.3522" width="54.8928" height="15.267" rx="3" transform="rotate(46.0533 25.9698 14.3522)" fill="#EEE950" />
-      <circle cx="44.6546" cy="13.7999" r="5.9852" transform="rotate(19.7332 44.6546 13.7999)" fill="#D9D9D9" />
+<svg width={size || width || 32} height={size || height || 32} viewBox="0 0 106 107" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 41.5L24.5 66.5L34.5 55.5L10.5 32C3.06554 32.7282 0.875648 34.9061 0 41.5Z" fill="#FF2E2E"/>
+<path d="M44 47.5L55 36.5L24.5 6C16.4114 6.79763 14.0922 9.29023 13.5 17L44 47.5Z" fill="#EEE950"/>
+<path d="M41.5 9.5C42.2239 2.18526 44.6077 0.471932 51 0L72.5 21.5L62 32L41.5 9.5Z" fill="#51C9E3"/>
+<path d="M24.5 83L82.5 26C90.9668 26.3241 93.0341 28.8256 93 36.5L34.5 95C27.5611 93.4936 25.1952 91.0517 24.5 83Z" fill="black"/>
+<path d="M55 95L94.5 55.5C101.422 57.1686 103.982 59.4275 105.5 66.5L65.5 106.5C58.0542 105.327 56.0772 102.49 55 95Z" fill="black"/>
+</svg>
 
-    </svg>
   )
 
 }
