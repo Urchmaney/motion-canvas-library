@@ -1,3 +1,4 @@
+import CopyIcon from "./Copy";
 import GithubIcon from "./Github";
 import LeftArrowIcon from "./LeftArrow";
 import MotionCanvasLibraryIcon from "./MotionCanvasLibrary";
@@ -13,5 +14,6 @@ export {
   PlayIcon,
   RepeatIcon,
   SearchIcon,
-  MotionCanvasLibraryIcon
+  MotionCanvasLibraryIcon,
+  CopyIcon
 }
