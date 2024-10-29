@@ -4,7 +4,9 @@
     "target": "es2017",
     "outDir": "./dist",
     "baseUrl": "./",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext"
   },
   "include": [
     "./**/*.ts"
