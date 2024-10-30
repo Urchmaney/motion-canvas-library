@@ -6,8 +6,12 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        primary: "#F3F7F9"
+      },
       backgroundImage: {
-        'gray-sclae': "url('/src/assets/aluminum.jpg')"
+        'gray-sclae': "url('/src/assets/aluminum.jpg')",
+        'right-curtain': "url('/right-curtain.svg')"
       }
     },
   },

@@ -6,12 +6,15 @@ export default function HomeLayout() {
   return (
     <div>
       <div className="container mx-auto px-2">
-        <div className="py-3 flex justify-between sticky top-0 z-10 bg-white">
+        <div className="py-3 flex justify-between sticky top-0 z-10 bg-primary border-b border-[#E2E9ED]">
           <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2 text-lg font-semibold">
-              <MotionCanvasLibraryIcon size={25} />
-              <span className="tracking-tight">Motion Canvas Library</span>
-            </div>
+            <Link to={"/"}>
+              <div className="flex items-center gap-2 text-lg font-semibold cursor-pointer">
+                <MotionCanvasLibraryIcon size={25} />
+                <span className="tracking-tight">Motion Canvas Library</span>
+              </div>
+            </Link>
+
 
             <div className="flex items-center gap-2 text-gray-500 text-lg">
               <Link to={`library`} className="hover:text-black">Library</Link>
