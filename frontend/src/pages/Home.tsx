@@ -1,7 +1,8 @@
 export default function Home () {
   return (
-    <div>
-      Home Page
+    <div className="h-[calc(100vh-100px)] -top-4">
+      
+      
     </div>
   )
 }

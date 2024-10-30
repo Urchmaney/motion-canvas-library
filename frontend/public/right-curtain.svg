@@ -1,0 +1,9 @@
+<svg viewBox="0 0 200 1000" width="200" height="1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bggradient" gradientTransform="rotate(90)">
+      <stop offset="30%" stop-color="#DEE9EE" />
+      <stop offset="70%" stop-color="#F3F7F9" />
+    </linearGradient>
+  </defs>
+ <path d="M 0,0 Q 120,-5 180,500 T 200,1000 L 0, 1000 L 0,0" fill="url('#bggradient')" />
+</svg>
