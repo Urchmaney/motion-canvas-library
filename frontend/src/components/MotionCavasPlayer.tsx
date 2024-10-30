@@ -1,6 +1,6 @@
-import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player, PlayerState, Project, Stage, Vector2 } from "@motion-canvas/core";
+import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PlayIcon, PauseIcon, RepeatIcon, MotionCanvasLibraryIcon } from "./icons";
+import { PlayIcon, PauseIcon, RepeatIcon } from "./icons";
 
 
 
@@ -63,7 +63,7 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
         logger
       )))
     }
-    getScene().then(x => console.log("done"))
+    getScene().then(_ => console.log("done"))
   }, []);
 
 

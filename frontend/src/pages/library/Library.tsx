@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import SearchIcon from "../../components/icons/Search";
 import { MotionCanvasPlayer } from "../../components/MotionCavasPlayer";
 import { CodeDisplay } from "../../components/CodeDisplay";
