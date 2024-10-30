@@ -5,5 +5,5 @@
       <stop offset="70%" stop-color="#F3F7F9" />
     </linearGradient>
   </defs>
- <path d="M 0,0 Q 120,-5 180,500 T 200,1000 L 0, 1000 L 0,0" fill="url('#bggradient')" />
+ <path d="M 200,0 Q 80,-5 20,500 T 0,1000 L 200,1000 L 200,0" fill="url('#bggradient')" />
 </svg>
