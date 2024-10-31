@@ -13,7 +13,7 @@ export default function HomeLayout() {
 
       </div>
       <div className="container mx-auto px-2">
-        <div className="py-3 flex justify-between sticky top-0 z-10 bg-primary border-b border-[#E2E9ED]">
+        <div className="py-3 flex justify-between sticky top-0 z-10 bg-transparent backdrop-filter backdrop-blur-sm bg-opacity-40 border-b border-[#E2E9ED]">
           <div className="flex items-center gap-8">
             <Link to={"/"}>
               <div className="flex items-center gap-2 text-lg font-semibold cursor-pointer">
