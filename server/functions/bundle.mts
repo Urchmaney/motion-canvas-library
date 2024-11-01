@@ -22,6 +22,6 @@ export default async (req: Request, context: Context) => {
     });
     return new Response(result.outputFiles[0].text, { status: 200 });
   } catch(e) {
-    return new Response(e?.message, { status: 400 });
+    return new Response(`${e?.message}`, { status: 400 });
   }
 }
