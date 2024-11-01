@@ -1,0 +1,14 @@
+.animated-header svg g {
+  animation: 4s infinite b
+}
+
+@keyframes b {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-100px);
+  }
+}
