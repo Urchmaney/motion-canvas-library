@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@netlify/functions": "^2.8.2",
     "cors": "^2.8.5",
     "esbuild": "^0.24.0",
     "express": "^4.21.1"

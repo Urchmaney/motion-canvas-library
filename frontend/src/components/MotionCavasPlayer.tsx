@@ -33,7 +33,7 @@ async function loadRemoteNodeModule(url: string, code: string) {
 }
 
 const createNodeScene = async (code: string) => {
-  const { default: scene } = await loadRemoteNodeModule("http://localhost:3000/bundle", code);
+  const { default: scene } = await loadRemoteNodeModule("http://localhost:8888/.netlify/functions/bundle", code);
   return scene;
 }
 

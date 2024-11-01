@@ -10,7 +10,7 @@
   },
   "include": [
     "./**/*.ts"
-  ],
+, "functions/bundle.mts"  ],
   "exclude": [
     "node_modules"
   ]
