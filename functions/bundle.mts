@@ -14,10 +14,10 @@ export default async (req: Request, event: HandlerEvent, context: Context) => {
         loader: 'tsx',
       },
     
-      alias: {
-        '@motion-canvas/2d': path.resolve(currentPath, "@motion-canvas/2d"),
-        '@motion-canvas/core': path.resolve(currentPath, "@motion-canvas/core")
-      },
+      // alias: {
+      //   '@motion-canvas/2d': path.resolve(currentPath, "@motion-canvas/2d"),
+      //   '@motion-canvas/core': path.resolve(currentPath, "@motion-canvas/core")
+      // },
       nodePaths: [currentPath],
       bundle: true,
       jsxImportSource: "@motion-canvas/2d/lib/",
