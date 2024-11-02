@@ -33,7 +33,7 @@ export default async (req: Request, event: HandlerEvent, context: Context) => {
     return new Response(result.outputFiles[0].text, { status: 200 });
   } catch(e) {
     console.log("error")
-    return new Response(`${e?.message}`, { status: 400 });
+    return new Response(`Error while bundling`, { status: 400 });
   }
 }
 
