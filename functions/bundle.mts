@@ -1,14 +1,13 @@
 import type { Config, Context, HandlerEvent } from "@netlify/functions";
-import * as mc2d from "@motion-canvas/2d"
 import path from "path";
+import { buildSync} from "esbuild";
 
 export default async (req: Request, event: HandlerEvent, context: Context) => {
   const data = await req.text()
   const code = JSON.parse(data)["code"];
-  const esbuild = require("esbuild")
   const currentPath = path.resolve(__dirname, '../../..', '../node_modules/')
   try {
-    const result = esbuild.buildSync({
+    const result = buildSync({
       stdin: {
         contents: code,
         resolveDir: './src',
