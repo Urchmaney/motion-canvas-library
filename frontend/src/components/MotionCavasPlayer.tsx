@@ -33,7 +33,7 @@ async function loadRemoteNodeModule(url: string, code: string) {
 }
 
 const createNodeScene = async (code: string) => {
-  const { default: scene } = await loadRemoteNodeModule(`${import.meta.env.VITE_BASE_URL}.netlify/functions/bundle/`, code);
+  const { default: scene } = await loadRemoteNodeModule(`${import.meta.env.VITE_BASE_URL}/.netlify/functions/bundle/`, code);
   return scene;
 }
 
