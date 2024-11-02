@@ -16,5 +16,10 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^9.0.1"
+  },
+  "dependencies": {
+    "esbuild": "^0.24.0",
+    "@motion-canvas/2d": "^3.17.1",
+    "@motion-canvas/core": "^3.17.0"
   }
 }
