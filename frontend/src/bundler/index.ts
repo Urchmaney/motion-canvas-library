@@ -9,9 +9,7 @@ export const bundle : (code: string) => Promise<string>= async (code: string) =>
   if(!initialized) {
     await esbuild.initialize({
       wasmURL: esbuildWasmUrl,
-    }).then(_ => {
-      console.log("esbuild initialized")
-    });
+    })
     initialized = true;
   }
 
