@@ -1,41 +1,7 @@
 import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon, RepeatIcon } from "./icons";
-
-
-
-async function loadRemoteNodeModule(url: string, code: string) {
-  const result = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify({ code }),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
-  const text = await result.text();
-
-  if (URL.createObjectURL) {
-    const blob = new Blob([text], { type: 'text/javascript' })
-    const url = URL.createObjectURL(blob)
-    const module = await import(
-        /* @vite-ignore */url
-    )
-    URL.revokeObjectURL(url) // GC objectURLs
-    return module
-  }
-  const module = await import(
-    /* @vite-ignore */`data:text/javascript,${text}`
-  )
-  // const node = (await promise).default;
-  return module;
-
-
-}
-
-const createNodeScene = async (code: string) => {
-  const { default: scene } = await loadRemoteNodeModule("http://localhost:3000/bundle", code);
-  return scene;
-}
+import { bundle } from "../bundler";
 
 export const MotionCanvasPlayer = ({ code }: { code: string }) => {
   const [player, setPlayer] = useState<Player>();
@@ -50,9 +16,24 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
     }
   );
 
+  const createNodeScene = useCallback(async (code: string) => {
+    const bundledCode = await bundle(code);
+    const blob = new Blob([bundledCode], { type: 'text/javascript' })
+    const url = URL.createObjectURL(blob);
+    const module = await import(
+      /* @vite-ignore */url
+    )
+    URL.revokeObjectURL(url) // GC objectURLs
+  
+    const { default:  scene } = module;
+    console.log(scene)
+    return scene;
+  }, [])
+
   useEffect(() => {
     const getScene = async () => {
       const logger = new Logger();
+      logger.onLogged.subscribe(console.log);
       const scene = await createNodeScene(code);
       setPlayer(new Player(bootstrap("repo",
         { core: "3.16.0", ui: "3.16.0", vitePlugin: "5.4.8", two: "3.16.0" },
@@ -78,17 +59,23 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
       ...stageConfiguration, fps: 30, resolutionScale: 1, range: [0, Infinity]
     });
     stage.configure(stageConfiguration);
-    player?.onRender.subscribe(async () => {
+    const renderUnsubscription = player?.onRender.subscribe(async () => {
       await stage.render(
         player.playback.currentScene,
         player.playback.previousScene,
       );
     })
-    player?.onStateChanged.subscribe((state) => {
+    const stateUnsubscription = player?.onStateChanged.subscribe((state) => {
       setPlayerState(state);
     })
+
+    return () => {
+      stateUnsubscription?.();
+      renderUnsubscription?.();
+      player?.deactivate();
+    }
   }, [player]);
-  
+
   const cnvasRef = useRef<HTMLDivElement | null>(null);
 
   const startPlay = () => {
@@ -108,7 +95,7 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
     <div className="relative py-3">
       <div className="w-3/6 rounded-2xl bg-gray-400  backdrop-filter backdrop-blur-sm bg-opacity-40  left-0 right-0 mx-auto top-5 shadow-sm flex">
         <div className="grow flex justify-center cursor-pointer hover:bg-gray-200 rounded-s-2xl h-9 items-center" onClick={startPlay}>
-          { !!playerState?.paused ? <PlayIcon /> : <PauseIcon /> }
+          {!!playerState?.paused ? <PlayIcon /> : <PauseIcon />}
         </div>
         {/* <div className={`grow flex justify-center cursor-pointer hover:bg-gray-200 items-center ${playerState.loop ? "text-blue-500" : ""}`} onClick={toggleLoop}>
           <MotionCanvasLibraryIcon />
