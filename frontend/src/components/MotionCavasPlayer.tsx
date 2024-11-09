@@ -2,6 +2,7 @@ import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player,
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon, RepeatIcon } from "./icons";
 import { bundle } from "../bundler";
+import { Loader } from "./icons/Loader";
 
 export const MotionCanvasPlayer = ({ code }: { code: string }) => {
   const [player, setPlayer] = useState<Player>();
@@ -24,8 +25,8 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
       /* @vite-ignore */url
     )
     URL.revokeObjectURL(url) // GC objectURLs
-  
-    const { default:  scene } = module;
+
+    const { default: scene } = module;
     console.log(scene)
     return scene;
   }, [])
@@ -107,9 +108,13 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
 
       {/* backdrop-blur-sm bg-transparent  */}
       <div ref={cnvasRef} className="px-5 pt-2 bg-no-repeat bg-cover w-full min-h-[700px]">
-
+        {
+          !player &&
+          <div className="w-full h-full flex justify-center items-center">
+            <Loader size={60} />
+          </div> 
+          }
       </div>
     </div>
-
   )
 }
