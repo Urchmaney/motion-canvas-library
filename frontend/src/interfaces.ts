@@ -9,4 +9,5 @@ export type CustomNode = {
 export type CustomNodeCode = {
   code: string
   usage: string
+  node_id: string
 }

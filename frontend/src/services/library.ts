@@ -13,8 +13,7 @@ const nodeConverter: FirestoreDataConverter<CustomNode> = ({
 
 const nodeCodeConverter: FirestoreDataConverter<CustomNodeCode> = ({
   toFirestore: (data: CustomNodeCode) => data,
-  fromFirestore: (snap: QueryDocumentSnapshot) =>
-    snap.data() as CustomNodeCode
+  fromFirestore: (snap: QueryDocumentSnapshot) => snap.data() as CustomNodeCode
 })
 
 export async function getCustomNodes(): Promise<CustomNode[]> {
@@ -29,5 +28,5 @@ export async function getCustomNodeCode(id: string) : Promise<CustomNodeCode> {
   const q = query(nodeCodeCollection, where("node_id", "==", id));
   const nodeCodeSnapshot = await getDocs(q);
   const nodeCode = nodeCodeSnapshot.docs[0];
-  return nodeCode.data();
+  return nodeCode?.data();
 }
