@@ -5,3 +5,7 @@
 body {
   background-color: theme("colors.primary");
 }
+
+textarea:focus, input:focus{
+  outline: none;
+}

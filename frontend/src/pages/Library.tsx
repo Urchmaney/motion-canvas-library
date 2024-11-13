@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import SearchIcon from "../../components/icons/Search";
-import { MotionCanvasPlayer } from "../../components/MotionCavasPlayer";
-import { CodeDisplay } from "../../components/CodeDisplay";
-import type { CustomNode, CustomNodeCode } from "../../interfaces";
-import { getCustomNodeCode, getCustomNodes } from "../../services/library";
+import SearchIcon from "../components/icons/Search";
+import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
+import { CodeDisplay } from "../components/CodeDisplay";
+import type { CustomNode, CustomNodeCode } from "../interfaces";
+import { getCustomNodeCode, getCustomNodes } from "../services/library";
 
 
 
