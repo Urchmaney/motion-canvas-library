@@ -26,6 +26,9 @@ export default function HomeLayout() {
             <div className="flex items-center gap-2 text-gray-500 text-lg">
               <Link to={`library`} className="hover:text-black">Library</Link>
             </div>
+            <div className="flex items-center gap-2 text-gray-500 text-base bg-[#DEE9EE] px-3 py-1 rounded">
+              <Link to={`try`} className="hover:text-black">Try</Link>
+            </div>
           </div>
 
 

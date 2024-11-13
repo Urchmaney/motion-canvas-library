@@ -1,5 +1,5 @@
 import Home from "./Home";
-import Library from "./library/Library";
+import Library from "./Library";
 
 export default {
   Home,
