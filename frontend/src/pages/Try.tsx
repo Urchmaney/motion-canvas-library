@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Editor, MotionCanvasPlayer } from "../components";
+import { Editor } from "../components";
 
 const defaultImport = `
 import {} from "@motion-canvas/core";
@@ -10,7 +10,7 @@ export default function Try() {
   const [tabs] = useState<string[]>(["Custom", "Usage"]);
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [tabCodes, setTabCodes] = useState<string[]>([defaultImport, defaultImport]);
-  const [run, setRun] = useState<boolean>(false);
+  const [_, setRun] = useState<boolean>(false);
 
   const tabCodeChange = (code: string) => {
     setRun(false);
@@ -35,7 +35,7 @@ export default function Try() {
         <Editor code={tabCodes[currentTab]} onCodeChange={tabCodeChange} />
       </div>
       <div>
-        { run && <MotionCanvasPlayer code={`${tabCodes.map(x=> `${x}\n`)}`} /> }
+        {/* { run && <MotionCanvasPlayer player={new Player()} /> } */}
       </div>
     </div>
   )

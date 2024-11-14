@@ -1,74 +1,42 @@
-import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
+import { Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon, RepeatIcon } from "./icons";
-import { bundle } from "../bundler";
+
 import { Loader } from "./icons/Loader";
 
-export const MotionCanvasPlayer = ({ code }: { code: string }) => {
-  const [player, setPlayer] = useState<Player>();
+export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
   const [stage] = useState<Stage>(new Stage());
-  const [playerState, setPlayerState] = useState<PlayerState>(
-    {
-      loop: true,
-      muted: true,
-      volume: 1,
-      speed: 1,
-      paused: true,
-    }
-  );
+  const [playerState, setPlayerState] = useState<PlayerState | undefined>(undefined);
 
-  const createNodeScene = useCallback(async (code: string) => {
-    const bundledCode = await bundle(code);
-    const blob = new Blob([bundledCode], { type: 'text/javascript' })
-    const url = URL.createObjectURL(blob);
-    const module = await import(
-      /* @vite-ignore */url
-    )
-    URL.revokeObjectURL(url) // GC objectURLs
-
-    const { default: scene } = module;
-    console.log(scene)
-    return scene;
-  }, [])
-
-  useEffect(() => {
-    const getScene = async () => {
-      const logger = new Logger();
-      logger.onLogged.subscribe(console.log);
-      const scene = await createNodeScene(code);
-      setPlayer(new Player(bootstrap("repo",
-        { core: "3.16.0", ui: "3.16.0", vitePlugin: "5.4.8", two: "3.16.0" },
-        [],
-        makeProject({ scenes: [scene as FullSceneDescription<unknown>] }),
-        new MetaFile("scene"),
-        new MetaFile("setting"),
-        logger
-      )))
-    }
-    getScene().then(_ => console.log("done"))
-  }, []);
-
-
-  useEffect(() => {
-    const stageConfiguration = {
-      background: null,
-      range: [0, Infinity],
-      size: new Vector2((cnvasRef.current?.clientWidth || 1920) - 40, cnvasRef.current?.clientHeight || 1200),
-      audioOffset: 0
-    }
-    player?.configure({
-      ...stageConfiguration, fps: 30, resolutionScale: 1, range: [0, Infinity]
-    });
-    stage.configure(stageConfiguration);
-    const renderUnsubscription = player?.onRender.subscribe(async () => {
+  const renderStage = useCallback(async () => {
+    if (player) {
       await stage.render(
         player.playback.currentScene,
         player.playback.previousScene,
-      );
-    })
-    const stateUnsubscription = player?.onStateChanged.subscribe((state) => {
-      setPlayerState(state);
-    })
+      )
+    }
+  }, [player])
+
+  useEffect(() => {
+    let renderUnsubscription: () => void;
+    let stateUnsubscription: () => void;
+
+    if (player) {
+      player.activate();
+      renderStage();
+      const stageConfiguration = {
+        background: null,
+        range: [0, Infinity],
+        size: new Vector2((cnvasRef.current?.clientWidth || 1920) - 40, cnvasRef.current?.clientWidth || 1200),
+        audioOffset: 0
+      }
+      player.configure({
+        ...stageConfiguration, fps: 30, resolutionScale: 1, range: [0, Infinity]
+      });
+      stage.configure(stageConfiguration);
+      renderUnsubscription = player.onRender.subscribe(renderStage)
+      stateUnsubscription = player.onStateChanged.subscribe(setPlayerState)
+    }
 
     return () => {
       stateUnsubscription?.();
@@ -101,7 +69,7 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
         {/* <div className={`grow flex justify-center cursor-pointer hover:bg-gray-200 items-center ${playerState.loop ? "text-blue-500" : ""}`} onClick={toggleLoop}>
           <MotionCanvasLibraryIcon />
         </div> */}
-        <div className={`grow flex justify-center cursor-pointer hover:bg-gray-200 rounded-e-2xl h-9 items-center ${playerState.loop ? "text-blue-500" : ""}`} onClick={toggleLoop}>
+        <div className={`grow flex justify-center cursor-pointer hover:bg-gray-200 rounded-e-2xl h-9 items-center ${playerState?.loop ? "text-blue-500" : ""}`} onClick={toggleLoop}>
           <RepeatIcon />
         </div>
       </div>
@@ -112,8 +80,8 @@ export const MotionCanvasPlayer = ({ code }: { code: string }) => {
           !player &&
           <div className="w-full h-full flex justify-center items-center">
             <Loader size={60} />
-          </div> 
-          }
+          </div>
+        }
       </div>
     </div>
   )
