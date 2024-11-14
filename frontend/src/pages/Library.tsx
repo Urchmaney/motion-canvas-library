@@ -4,8 +4,8 @@ import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
 import { getCustomNodeCode, getCustomNodes } from "../services/library";
-import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player } from "@motion-canvas/core";
-import { createSceneFromCode } from "../util";
+import type { Player } from "@motion-canvas/core";
+import { createPlayer, createSceneFromCode } from "../util";
 import { usePlayersContext } from "../contexts";
 
 
@@ -62,18 +62,9 @@ export default function Library() {
   useEffect(() => {
     if (customNodeId) {
       const setupNodePlayer = async (nodeCode: CustomNodeCode) => {
-        const logger = new Logger();
-        logger.onLogged.subscribe(console.log);
         const fullCode = `${nodeCode?.code}\n${nodeCode?.usage}`;
         const scene = await createSceneFromCode(fullCode);
-        const player = new Player(bootstrap("repo",
-          { core: "3.16.0", ui: "3.16.0", vitePlugin: "5.4.8", two: "3.16.0" },
-          [],
-          makeProject({ scenes: [scene as FullSceneDescription<unknown>] }),
-          new MetaFile("scene"),
-          new MetaFile("setting"),
-          logger
-        ));
+        const player = createPlayer(scene);
         addComponentPlayer(customNodeId, player);
         setNodePlayer(player);
       }
@@ -116,9 +107,11 @@ export default function Library() {
           </div>
 
           <div className="w-full">
-            {section === "preview" && (nodePlayer ? <MotionCanvasPlayer player={nodePlayer} /> : (<div className="w-full h-full flex justify-center items-center">
-              <Loader size={60} />
-            </div>)) }
+            {
+              section === "preview" && (nodePlayer ? <MotionCanvasPlayer player={nodePlayer} /> : (<div className="w-full h-full flex justify-center items-center">
+                <Loader size={60} />
+              </div>))
+            }
             {section === "code" && <CodeDisplay code={nodeCode?.code || ""} />}
             {section === "usage" && <CodeDisplay code={nodeCode?.usage || ""} />}
           </div>
