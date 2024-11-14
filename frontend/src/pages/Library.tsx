@@ -4,7 +4,7 @@ import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
 import { getCustomNodeCode, getCustomNodes } from "../services/library";
-import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player, Project } from "@motion-canvas/core";
+import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player } from "@motion-canvas/core";
 import { createSceneFromCode } from "../util";
 import { usePlayersContext } from "../contexts";
 
