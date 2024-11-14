@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchIcon, Loader } from "../components/icons";
 import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
 import { getCustomNodeCode, getCustomNodes } from "../services/library";
-import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player } from "@motion-canvas/core";
+import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player, Project } from "@motion-canvas/core";
 import { createSceneFromCode } from "../util";
-import { bundle } from "../bundler";
+import { usePlayersContext } from "../contexts";
 
 
 
@@ -55,37 +55,39 @@ export default function Library() {
   const [section, setSection] = useState<"preview" | "code" | "usage">("preview")
   const [customNodeId, setCustomNodeId] = useState<string | null>(null);
   const [nodeCode, setNodeCode] = useState<CustomNodeCode | null>(null);
+  const { players, addComponentPlayer } = usePlayersContext();
+
   const [nodePlayer, setNodePlayer] = useState<Player | null>(null);
 
-
   useEffect(() => {
-    if (nodeCode) {
-
-      const setupNodePlayer = async () => {
+    if (customNodeId) {
+      const setupNodePlayer = async (nodeCode: CustomNodeCode) => {
         const logger = new Logger();
         logger.onLogged.subscribe(console.log);
         const fullCode = `${nodeCode?.code}\n${nodeCode?.usage}`;
         const scene = await createSceneFromCode(fullCode);
-        console.log(scene)
-        setNodePlayer(new Player(bootstrap("repo",
+        const player = new Player(bootstrap("repo",
           { core: "3.16.0", ui: "3.16.0", vitePlugin: "5.4.8", two: "3.16.0" },
           [],
           makeProject({ scenes: [scene as FullSceneDescription<unknown>] }),
           new MetaFile("scene"),
           new MetaFile("setting"),
           logger
-        )));
+        ));
+        addComponentPlayer(customNodeId, player);
+        setNodePlayer(player);
       }
-      setupNodePlayer().then(
-        _ => console.log("setup complete"))
-    }
-  }, [nodeCode])
 
-  useEffect(() => {
-    if (customNodeId) {
+      const player = players[customNodeId];
+      if (player) {
+        setNodePlayer(player);
+        return;
+      }
       getCustomNodeCode(customNodeId).then(code => {
         setNodeCode(code);
-      }).catch(_ => console.log("error setting up"));
+        return setupNodePlayer(code);
+      }).then(
+        _ => console.log("setup complete")).catch(_ => console.log("error setting up"));
     }
   }, [customNodeId]);
 
@@ -114,10 +116,9 @@ export default function Library() {
           </div>
 
           <div className="w-full">
-            {section === "preview" && nodePlayer && <MotionCanvasPlayer player={nodePlayer} />}
-            {section === "preview" && !nodePlayer && (<div className="w-full h-full flex justify-center items-center">
+            {section === "preview" && (nodePlayer ? <MotionCanvasPlayer player={nodePlayer} /> : (<div className="w-full h-full flex justify-center items-center">
               <Loader size={60} />
-            </div>)}
+            </div>)) }
             {section === "code" && <CodeDisplay code={nodeCode?.code || ""} />}
             {section === "usage" && <CodeDisplay code={nodeCode?.usage || ""} />}
           </div>

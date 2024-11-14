@@ -1,13 +1,10 @@
-import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
+import { Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon, RepeatIcon } from "./icons";
 
 import { Loader } from "./icons/Loader";
-import { usePlayerContext } from "../contexts";
 
 export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
-  // const [player, setPlayer] = useState<Player>();
-  // const { player, componentId, setPlayer, setComponentId } = usePlayerContext();
   const [stage] = useState<Stage>(new Stage());
   const [playerState, setPlayerState] = useState<PlayerState | undefined>(undefined);
 
@@ -23,8 +20,10 @@ export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
   useEffect(() => {
     let renderUnsubscription: () => void;
     let stateUnsubscription: () => void;
+
     if (player) {
-      console.log("found player")
+      player.activate();
+      renderStage();
       const stageConfiguration = {
         background: null,
         range: [0, Infinity],
@@ -36,12 +35,8 @@ export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
       });
       stage.configure(stageConfiguration);
       renderUnsubscription = player.onRender.subscribe(renderStage)
-      stateUnsubscription = player.onStateChanged.subscribe((state) => {
-        console.log("changing state", state)
-        setPlayerState(state);
-      })
+      stateUnsubscription = player.onStateChanged.subscribe(setPlayerState)
     }
-
 
     return () => {
       stateUnsubscription?.();
