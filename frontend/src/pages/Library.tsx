@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import SearchIcon from "../components/icons/Search";
+import { SearchIcon, Loader } from "../components/icons";
 import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
 import { getCustomNodeCode, getCustomNodes } from "../services/library";
+import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player } from "@motion-canvas/core";
+import { createSceneFromCode } from "../util";
 
 
 
@@ -14,7 +16,7 @@ function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (id: stri
       setCustomNodes(nodes);
       setSelectedNode(nodes[0]?.id)
     })
-  }, [customeNodes])
+  }, [])
   return (
     <div className="pe-3">
       <div>
@@ -35,7 +37,7 @@ function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (id: stri
         <div className="text-gray-500 flex flex-col gap-3">
           {
             customeNodes.map((node, id) => (
-              <div className="flex justify-between" onClick={() => setSelectedNode(node.id)} key={`custome_node_${id}`}>
+              <div className="flex justify-between cursor-pointer" onClick={() => setSelectedNode(node.id)} key={`custome_node_${id}`}>
                 {node.name}
                 <span className="text-xs rounded-md text-black bg-gray-300 flex items-center px-2">{node.numberOfCopies}</span>
               </div>
@@ -52,10 +54,34 @@ export default function Library() {
   const [section, setSection] = useState<"preview" | "code" | "usage">("preview")
   const [customNodeId, setCustomNodeId] = useState<string | null>(null);
   const [nodeCode, setNodeCode] = useState<CustomNodeCode | null>(null);
+  const [nodePlayer, setNodePlayer] = useState<Player | undefined>(undefined);
 
   useEffect(() => {
+    console.log("runnunn")
+    const setupNodePlayer = async (nodeCode: CustomNodeCode) => {
+      const logger = new Logger();
+      logger.onLogged.subscribe(console.log);
+      const fullCode = `${nodeCode?.code}\n${nodeCode?.usage}`;
+      console.log(fullCode)
+      const scene = await createSceneFromCode(fullCode);
+      console.log(scene)
+      setNodePlayer(new Player(bootstrap("repo",
+        { core: "3.16.0", ui: "3.16.0", vitePlugin: "5.4.8", two: "3.16.0" },
+        [],
+        makeProject({ scenes: [scene as FullSceneDescription<unknown>] }),
+        new MetaFile("scene"),
+        new MetaFile("setting"),
+        logger
+      )));
+    }
+  
     if (customNodeId) {
-      getCustomNodeCode(customNodeId).then(code => setNodeCode(code))
+      getCustomNodeCode(customNodeId).then(code => {
+        setNodeCode(code);
+        return setupNodePlayer(code);
+      }).then(
+        _ => console.log("setup complete")
+      ).catch(_ => console.log("error setting up"));
     }
   }, [customNodeId]);
 
@@ -84,7 +110,10 @@ export default function Library() {
           </div>
 
           <div className="w-full">
-            {section === "preview" && nodeCode && <MotionCanvasPlayer code={`${nodeCode.code}\n${nodeCode.usage}`} />}
+            {section === "preview" && nodePlayer && <MotionCanvasPlayer player={nodePlayer} />}
+            {section === "preview" && !nodePlayer && (<div className="w-full h-full flex justify-center items-center">
+                <Loader size={60} />
+              </div>)}
             {section === "code" && <CodeDisplay code={nodeCode?.code || ""} />}
             {section === "usage" && <CodeDisplay code={nodeCode?.usage || ""} />}
           </div>

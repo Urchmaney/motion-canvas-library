@@ -6,6 +6,7 @@ import PauseIcon from "./Pause";
 import PlayIcon from "./Play";
 import RepeatIcon from "./Repeat";
 import SearchIcon from "./Search";
+import { Loader } from "./Loader";
 
 export {
   GithubIcon,
@@ -15,5 +16,6 @@ export {
   RepeatIcon,
   SearchIcon,
   MotionCanvasLibraryIcon,
-  CopyIcon
+  CopyIcon,
+  Loader
 }

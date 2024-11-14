@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Editor, MotionCanvasPlayer } from "../components";
+import { Player } from "@motion-canvas/core";
 
 const defaultImport = `
 import {} from "@motion-canvas/core";
@@ -35,7 +36,7 @@ export default function Try() {
         <Editor code={tabCodes[currentTab]} onCodeChange={tabCodeChange} />
       </div>
       <div>
-        { run && <MotionCanvasPlayer code={`${tabCodes.map(x=> `${x}\n`)}`} /> }
+        {/* { run && <MotionCanvasPlayer player={new Player()} /> } */}
       </div>
     </div>
   )
