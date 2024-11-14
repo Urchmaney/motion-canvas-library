@@ -11,33 +11,37 @@ export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
   const [stage] = useState<Stage>(new Stage());
   const [playerState, setPlayerState] = useState<PlayerState | undefined>(undefined);
 
+  const renderStage = useCallback(async () => {
+    if (player) {
+      await stage.render(
+        player.playback.currentScene,
+        player.playback.previousScene,
+      )
+    }
+  }, [player])
 
   useEffect(() => {
     let renderUnsubscription: () => void;
     let stateUnsubscription: () => void;
     if (player) {
+      console.log("found player")
       const stageConfiguration = {
         background: null,
         range: [0, Infinity],
-        size: new Vector2((cnvasRef.current?.clientWidth || 1920) - 40,  1200),
+        size: new Vector2((cnvasRef.current?.clientWidth || 1920) - 40, cnvasRef.current?.clientWidth || 1200),
         audioOffset: 0
       }
       player.configure({
         ...stageConfiguration, fps: 30, resolutionScale: 1, range: [0, Infinity]
       });
       stage.configure(stageConfiguration);
-      renderUnsubscription = player.onRender.subscribe(async () => {
-        await stage.render(
-          player.playback.currentScene,
-          player.playback.previousScene,
-        )}
-      )
+      renderUnsubscription = player.onRender.subscribe(renderStage)
       stateUnsubscription = player.onStateChanged.subscribe((state) => {
         console.log("changing state", state)
         setPlayerState(state);
       })
     }
-    
+
 
     return () => {
       stateUnsubscription?.();

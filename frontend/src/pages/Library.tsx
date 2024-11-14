@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SearchIcon, Loader } from "../components/icons";
 import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
 import { CodeDisplay } from "../components/CodeDisplay";
@@ -6,6 +6,7 @@ import type { CustomNode, CustomNodeCode } from "../interfaces";
 import { getCustomNodeCode, getCustomNodes } from "../services/library";
 import { bootstrap, FullSceneDescription, Logger, makeProject, MetaFile, Player } from "@motion-canvas/core";
 import { createSceneFromCode } from "../util";
+import { bundle } from "../bundler";
 
 
 
@@ -54,34 +55,37 @@ export default function Library() {
   const [section, setSection] = useState<"preview" | "code" | "usage">("preview")
   const [customNodeId, setCustomNodeId] = useState<string | null>(null);
   const [nodeCode, setNodeCode] = useState<CustomNodeCode | null>(null);
-  const [nodePlayer, setNodePlayer] = useState<Player | undefined>(undefined);
+  const [nodePlayer, setNodePlayer] = useState<Player | null>(null);
+
 
   useEffect(() => {
-    console.log("runnunn")
-    const setupNodePlayer = async (nodeCode: CustomNodeCode) => {
-      const logger = new Logger();
-      logger.onLogged.subscribe(console.log);
-      const fullCode = `${nodeCode?.code}\n${nodeCode?.usage}`;
-      console.log(fullCode)
-      const scene = await createSceneFromCode(fullCode);
-      console.log(scene)
-      setNodePlayer(new Player(bootstrap("repo",
-        { core: "3.16.0", ui: "3.16.0", vitePlugin: "5.4.8", two: "3.16.0" },
-        [],
-        makeProject({ scenes: [scene as FullSceneDescription<unknown>] }),
-        new MetaFile("scene"),
-        new MetaFile("setting"),
-        logger
-      )));
+    if (nodeCode) {
+
+      const setupNodePlayer = async () => {
+        const logger = new Logger();
+        logger.onLogged.subscribe(console.log);
+        const fullCode = `${nodeCode?.code}\n${nodeCode?.usage}`;
+        const scene = await createSceneFromCode(fullCode);
+        console.log(scene)
+        setNodePlayer(new Player(bootstrap("repo",
+          { core: "3.16.0", ui: "3.16.0", vitePlugin: "5.4.8", two: "3.16.0" },
+          [],
+          makeProject({ scenes: [scene as FullSceneDescription<unknown>] }),
+          new MetaFile("scene"),
+          new MetaFile("setting"),
+          logger
+        )));
+      }
+      setupNodePlayer().then(
+        _ => console.log("setup complete"))
     }
-  
+  }, [nodeCode])
+
+  useEffect(() => {
     if (customNodeId) {
       getCustomNodeCode(customNodeId).then(code => {
         setNodeCode(code);
-        return setupNodePlayer(code);
-      }).then(
-        _ => console.log("setup complete")
-      ).catch(_ => console.log("error setting up"));
+      }).catch(_ => console.log("error setting up"));
     }
   }, [customNodeId]);
 
@@ -112,8 +116,8 @@ export default function Library() {
           <div className="w-full">
             {section === "preview" && nodePlayer && <MotionCanvasPlayer player={nodePlayer} />}
             {section === "preview" && !nodePlayer && (<div className="w-full h-full flex justify-center items-center">
-                <Loader size={60} />
-              </div>)}
+              <Loader size={60} />
+            </div>)}
             {section === "code" && <CodeDisplay code={nodeCode?.code || ""} />}
             {section === "usage" && <CodeDisplay code={nodeCode?.usage || ""} />}
           </div>
