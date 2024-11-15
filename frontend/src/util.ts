@@ -25,3 +25,18 @@ export function createPlayer(scene: FullSceneDescription<unknown>): Player {
     logger
   ));
 }
+
+export function combineCodes(codes: string[]): string {
+  const importRegex = /import\s+?(?:(?:(?:[\w*\s{},]*)\s+from\s+?)|)(?:(?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g
+  let result = codes[0];
+  for (let i = 1; i < codes.length; i++) {
+    const matches = codes[i].match(importRegex);
+    const replaced = codes[i].replace(importRegex, "");
+    if (matches) {
+      const imports = matches.join("\n");
+      result = `${imports}\n${result}`;
+    }
+    result = `${result}\n${replaced}`
+  }
+  return result;
+}
