@@ -5,7 +5,7 @@ import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
 import { getCustomNodeCode, getCustomNodes } from "../services/library";
 import type { Player } from "@motion-canvas/core";
-import { createPlayer, createSceneFromCode } from "../util";
+import { combineCodes, createPlayer, createSceneFromCode } from "../util";
 import { usePlayersContext } from "../contexts";
 
 
@@ -62,7 +62,7 @@ export default function Library() {
   useEffect(() => {
     if (customNodeId) {
       const setupNodePlayer = async (nodeCode: CustomNodeCode) => {
-        const fullCode = `${nodeCode?.code}\n${nodeCode?.usage}`;
+        const fullCode = combineCodes([nodeCode?.code || "", nodeCode?.usage || ""]);
         const scene = await createSceneFromCode(fullCode);
         const player = createPlayer(scene);
         addComponentPlayer(customNodeId, player);

@@ -25,6 +25,11 @@ export const bundle : (code: string) => Promise<string>= async (code: string) =>
     jsxFragment: 'Fragment',
     write: false,
     format: "esm",
+    tsconfigRaw: {
+      compilerOptions: {
+        experimentalDecorators: true
+      }
+    },
     external: [
       "react/jsx-runtime"
     ],
