@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Editor, MotionCanvasPlayer } from "../components";
 import { Player } from "@motion-canvas/core";
 import { Loader, PlayIcon } from "../components/icons";
-import { createPlayer, createSceneFromCode } from "../util";
+import { combineCodes, createPlayer, createSceneFromCode } from "../util";
 
 const defaultImport = `
 import {} from "@motion-canvas/core";
@@ -26,7 +26,7 @@ export default function Try() {
 
   const processCode = () => {
     setProcessing(true);
-    createSceneFromCode(tabCodes.join("\n")).then((scene) => {
+    createSceneFromCode(combineCodes(tabCodes)).then((scene) => {
       const player = createPlayer(scene);
       setPlayer(player);
       setProcessing(false);
