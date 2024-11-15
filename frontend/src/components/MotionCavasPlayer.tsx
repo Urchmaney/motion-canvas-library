@@ -1,8 +1,6 @@
 import { Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { PlayIcon, PauseIcon, RepeatIcon } from "./icons";
-
-import { Loader } from "./icons/Loader";
+import { PlayIcon, PauseIcon, RepeatIcon, Loader } from "./icons";
 
 export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
   const [stage] = useState<Stage>(new Stage());
