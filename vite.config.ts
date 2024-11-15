@@ -12,10 +12,10 @@ export default defineConfig(
       async buildStart() {
         const entryFiles = [
           {
-            in: resolve(__dirname, '../node_modules/@motion-canvas/2d/lib/index.js'), out: "2d",
+            in: resolve(__dirname, 'node_modules/@motion-canvas/2d/lib/index.js'), out: "2d",
           },
           {
-            in: resolve(__dirname, '../node_modules/@motion-canvas/core/lib/index.js'), out: "core"
+            in: resolve(__dirname, 'node_modules/@motion-canvas/core/lib/index.js'), out: "core"
           }
         ]
         const outputDir = resolve("public/@motion-canvas")

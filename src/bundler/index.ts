@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild-wasm';
-import esbuildWasmUrl from '../../../node_modules/esbuild-wasm/esbuild.wasm?url'
+import esbuildWasmUrl from '../../node_modules/esbuild-wasm/esbuild.wasm?url'
 import motionCanvasPlugin from './plugins/motion-canvas-plugin';
 import jsxRuntimePlugin from './plugins/jsx-runtime-plugin';
 

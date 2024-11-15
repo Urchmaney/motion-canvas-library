@@ -1,23 +1,44 @@
 {
   "name": "motion-canvas-library",
-  "version": "1.0.0",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "description": "Motion Canvas library for custom components",
-  "main": "index.js",
-  "workspaces": [
-    "server",
-    "frontend"
-  ],
-  "scripts": {
-    "server": "npm run dev -w server",
-    "frontend": "npm run dev -w frontend",
-    "start": "concurrently \"npm run server\" \"npm run frontend\""
-  },
   "author": "Unegbu Kingsley",
   "license": "ISC",
-  "devDependencies": {
-    "concurrently": "^9.0.1"
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@motion-canvas/2d": "^3.17.1",
+    "@motion-canvas/core": "^3.17.0",
+    "esbuild-wasm": "^0.24.0",
+    "prismjs": "^1.29.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0",
+    "react-simple-code-editor": "^0.14.1",
     "firebase": "^11.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.13.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.13",
+    "globals": "^15.11.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.10.0",
+    "vite": "^5.4.9"
   }
 }
