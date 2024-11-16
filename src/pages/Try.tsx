@@ -43,7 +43,7 @@ export default function Try() {
     });
   }
   return (
-    <div className="w-full flex flex-col h-lvh relative overflow-x-hidden">
+    <div className="w-full flex flex-col relative overflow-hidden">
       <div className="basis-20 flex flex-col justify-end">
         <div className="px-5 flex gap-3">
           {
