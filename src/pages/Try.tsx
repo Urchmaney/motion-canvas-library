@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Editor, MotionCanvasPlayer } from "../components";
 import { Player } from "@motion-canvas/core";
 import { CloseIcon, Loader, PlayIcon } from "../components/icons";
-import { combineCodes, createPlayer, createSceneFromCode } from "../util";
+import { combineCodes, createPlayer, createSceneFromCode, getCodeFromLocalStorage, saveCodeToLocalStorage } from "../util";
 
 interface ProcessingState {
   state: "idle" | "processing" | "error" | "finished"
@@ -17,11 +17,12 @@ import {} from "@motion-canvas/2d";
 export default function Try() {
   const [tabs] = useState<string[]>(["Custom", "Usage"]);
   const [currentTab, setCurrentTab] = useState<number>(0);
-  const [tabCodes, setTabCodes] = useState<string[]>([defaultImport, defaultImport]);
+  const [tabCodes, setTabCodes] = useState<string[]>(tabs.map(x => getCodeFromLocalStorage(x) || defaultImport));
   const [processing, setProcessing] = useState<ProcessingState>({ state: "idle" });
   const [player, setPlayer] = useState<Player | null>(null);
 
   const tabCodeChange = (code: string) => {
+    saveCodeToLocalStorage(tabs[currentTab], code);
     setTabCodes(prev => {
       const newTabCodes = [...prev];
       newTabCodes[currentTab] = code

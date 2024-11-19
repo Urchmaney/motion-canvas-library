@@ -40,3 +40,20 @@ export function combineCodes(codes: string[]): string {
   }
   return result;
 }
+
+export function getCodeFromLocalStorage(key: string): string | null {
+  return localStorage.getItem(key) || "";
+}
+
+function debouncedSetCodeOnLocalStorage() {
+  let id: ReturnType<typeof setTimeout>;
+  return (key: string, code: string) => {
+    if (id) clearTimeout(id);
+    id = setTimeout(() => {
+      localStorage.setItem(key, code);
+      clearTimeout(id)
+    }, 2000)
+  }
+}
+
+export const saveCodeToLocalStorage = debouncedSetCodeOnLocalStorage();
