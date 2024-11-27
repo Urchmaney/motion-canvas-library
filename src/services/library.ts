@@ -1,4 +1,4 @@
-import { collection, FirestoreDataConverter, getDocs, query, QueryDocumentSnapshot, where } from "firebase/firestore";
+import { addDoc, collection, FirestoreDataConverter, getDocs, query, QueryDocumentSnapshot, where } from "firebase/firestore";
 import { db } from "../firebase";
 import type { CustomNode, CustomNodeCode } from "../interfaces"
 
@@ -29,4 +29,12 @@ export async function getCustomNodeCode(id: string) : Promise<CustomNodeCode> {
   const nodeCodeSnapshot = await getDocs(q);
   const nodeCode = nodeCodeSnapshot.docs[0];
   return nodeCode?.data();
+}
+
+export async function addCustomNodeCode(code: CustomNodeCode) {
+  const nodeCode = await getCustomNodeCode(code.node_id);
+  if (!nodeCode) {
+    const nodeCodeCollection = collection(db, CustomNodeCodeCollection).withConverter(nodeCodeConverter);
+    await addDoc(nodeCodeCollection, code);
+  }
 }
