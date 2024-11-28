@@ -12,12 +12,20 @@ import { usePlayersContext } from "../contexts";
 
 function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (node: CustomNode) => void }) {
   const [customeNodes, setCustomNodes] = useState<CustomNode[]>([]);
+  const [activeId, setActiveId] = useState<string | undefined>();
+
   useEffect(() => {
     getCustomNodes().then(nodes => {
       setCustomNodes(nodes);
-      setSelectedNode(nodes[0])
+      setSelectedNode(nodes[0]);
+      setActiveId(nodes[0]?.id);
     })
-  }, [])
+  }, []);
+
+  const selectNode = (node: CustomNode) => {
+    setSelectedNode(node);
+    setActiveId(node.id);
+  }
   return (
     <div className="pe-3">
       <div>
@@ -38,9 +46,12 @@ function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (node: Cu
         <div className="text-gray-500 flex flex-col gap-3">
           {
             customeNodes.map((node, id) => (
-              <div className="flex justify-between cursor-pointer" onClick={() => setSelectedNode(node)} key={`custome_node_${id}`}>
-                {node.name}
-                <span className="text-xs rounded-md text-black bg-gray-300 flex items-center px-2">{node.numberOfCopies}</span>
+              <div className={`flex justify-between cursor-pointer`} onClick={() => selectNode(node)} key={`custome_node_${id}`}>
+                <div className="flex justify-start">
+                  <p className={`p-1 min-w-40  ${activeId === node.id ? "bg-[#D1D5DB] pe-6" : ""}`}>{node.name}</p>
+                  { activeId === node.id && <p className="h-full border-l-[50px] border-t-[33.5px] border-t-transparent border-l-secondary"></p> }
+                </div>
+                <span className="text-xs rounded-md text-black bg-secondary flex items-center px-2">{node.numberOfCopies}</span>
               </div>
             ))
           }
