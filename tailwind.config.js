@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#F3F7F9"
+        primary: "#F3F7F9",
+        secondary: "#D1D5DB"
       },
       backgroundImage: {
         'gray-sclae': "url('/src/assets/aluminum.jpg')",
