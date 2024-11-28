@@ -1,4 +1,4 @@
-import { addDoc, collection, FirestoreDataConverter, getDocs, query, QueryDocumentSnapshot, where } from "firebase/firestore";
+import { addDoc, collection, doc, FirestoreDataConverter, getDoc, getDocs, query, QueryDocumentSnapshot, where } from "firebase/firestore";
 import { db } from "../firebase";
 import type { CustomNode, CustomNodeCode } from "../interfaces"
 
@@ -19,11 +19,18 @@ const nodeCodeConverter: FirestoreDataConverter<CustomNodeCode> = ({
 export async function getCustomNodes(): Promise<CustomNode[]> {
   const nodeCollection = collection(db, CustomNodeCollection).withConverter(nodeConverter);
   const nodeSnapshot = await getDocs(nodeCollection);
-  const nodeList = nodeSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id} as CustomNode));
+  const nodeList = nodeSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as CustomNode));
   return nodeList;
 }
 
-export async function getCustomNodeCode(id: string) : Promise<CustomNodeCode> {
+export async function getCustomNode(id: string): Promise<CustomNode | null> {
+  const docRef = doc(db, CustomNodeCollection, id).withConverter(nodeConverter);
+  const document = await getDoc(docRef);
+  if (document.exists()) return { ...document.data(), id: document.id };
+  return null;
+}
+
+export async function getCustomNodeCode(id: string): Promise<CustomNodeCode> {
   const nodeCodeCollection = collection(db, CustomNodeCodeCollection).withConverter(nodeCodeConverter);
   const q = query(nodeCodeCollection, where("node_id", "==", id));
   const nodeCodeSnapshot = await getDocs(q);

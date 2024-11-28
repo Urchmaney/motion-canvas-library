@@ -3,24 +3,28 @@ import { SearchIcon, Loader } from "../components/icons";
 import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
-import { getCustomNodeCode, getCustomNodes } from "../services/library";
+import { getCustomNodeCode } from "../services/library";
 import type { Player } from "@motion-canvas/core";
 import { combineCodes, createPlayer, createSceneFromCode } from "../util";
 import { usePlayersContext } from "../contexts";
+import { useLoaderData } from "react-router-dom";
 
 
 
 function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (node: CustomNode) => void }) {
-  const [customeNodes, setCustomNodes] = useState<CustomNode[]>([]);
   const [activeId, setActiveId] = useState<string | undefined>();
+  const { customeNodes, paramNode } = useLoaderData() as { customeNodes: CustomNode[], paramNode: CustomNode };
 
   useEffect(() => {
-    getCustomNodes().then(nodes => {
-      setCustomNodes(nodes);
-      setSelectedNode(nodes[0]);
-      setActiveId(nodes[0]?.id);
-    })
-  }, []);
+    if (paramNode) {
+      setSelectedNode(paramNode);
+      setActiveId(paramNode.id);
+      return;
+    }
+    setSelectedNode(customeNodes[0]);
+    setActiveId(customeNodes[0]?.id);
+   
+  }, [customeNodes, paramNode]);
 
   const selectNode = (node: CustomNode) => {
     setSelectedNode(node);
@@ -49,7 +53,7 @@ function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (node: Cu
               <div className={`flex justify-between cursor-pointer`} onClick={() => selectNode(node)} key={`custome_node_${id}`}>
                 <div className="flex justify-start">
                   <p className={`p-1 min-w-40  ${activeId === node.id ? "bg-[#D1D5DB] pe-6" : ""}`}>{node.name}</p>
-                  { activeId === node.id && <p className="h-full border-l-[50px] border-t-[33.5px] border-t-transparent border-l-secondary"></p> }
+                  {activeId === node.id && <p className="h-full border-l-[50px] border-t-[33.5px] border-t-transparent border-l-secondary"></p>}
                 </div>
                 <span className="text-xs rounded-md text-black bg-secondary flex items-center px-2">{node.numberOfCopies}</span>
               </div>
