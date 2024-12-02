@@ -71,7 +71,7 @@ export default function Library() {
   const [customNode, setCustomNode] = useState<CustomNode | null>(null);
   const [nodeCode, setNodeCode] = useState<CustomNodeCode | null>(null);
   const { players, addComponentPlayer } = usePlayersContext();
-
+  const [switchingPlayer, setSwitchingPlayer] = useState<boolean>(false);
   const [nodePlayer, setNodePlayer] = useState<Player | null>(null);
 
   useEffect(() => {
@@ -82,6 +82,7 @@ export default function Library() {
         const player = createPlayer(scene);
         addComponentPlayer(customNode.id, player);
         setNodePlayer(player);
+        setSwitchingPlayer(false);
       }
 
       const player = players[customNode.id];
@@ -89,6 +90,7 @@ export default function Library() {
         setNodePlayer(player);
         return;
       }
+      setSwitchingPlayer(true);
       getCustomNodeCode(customNode.id).then(code => {
         setNodeCode(code);
         return setupNodePlayer(code);
@@ -123,7 +125,7 @@ export default function Library() {
 
           <div className="w-full">
             {
-              section === "preview" && (nodePlayer ? <MotionCanvasPlayer player={nodePlayer} /> : (<div className="w-full h-full flex justify-center items-center">
+              section === "preview" && ((nodePlayer && !switchingPlayer) ? <MotionCanvasPlayer player={nodePlayer} /> : (<div className="w-full h-full flex justify-center items-center">
                 <Loader size={60} />
               </div>))
             }
