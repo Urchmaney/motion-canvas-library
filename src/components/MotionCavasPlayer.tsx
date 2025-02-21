@@ -1,8 +1,9 @@
 import { Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon, RepeatIcon, Loader } from "./icons";
+import GoodScoreIcon from "./icons/GoodScore";
 
-export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
+export function MotionCanvasPlayer({ player, stageBg }: { player?: Player, stageBg?: string }) {
   const [stage] = useState<Stage>(new Stage());
   const [playerState, setPlayerState] = useState<PlayerState | undefined>(undefined);
 
@@ -23,9 +24,9 @@ export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
       player.activate();
       renderStage();
       const stageConfiguration = {
-        background: null,
+        background: stageBg,
         range: [0, Infinity],
-        size: new Vector2((cnvasRef.current?.clientWidth || 1920) - 40, cnvasRef.current?.clientWidth || 1200),
+        size: new Vector2((cnvasRef.current?.clientWidth || 1920) - 40, cnvasRef.current?.clientHeight || 1200),
         audioOffset: 0
       }
       player.configure({
@@ -44,7 +45,7 @@ export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
   }, [player]);
 
   const cnvasRef = useRef<HTMLDivElement | null>(null);
-
+  const stageBgInputRef = useRef<HTMLInputElement | null>(null);
   const startPlay = () => {
     player?.togglePlayback();
   }
@@ -53,6 +54,20 @@ export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
     player?.toggleLoop();
   }
 
+  const changStageBackgroundColor = (event: FormEvent) => {
+    event.preventDefault();
+    const color = stageBgInputRef.current?.value;
+    const style = new Option().style;
+    style.color = color || "";
+    if (color && style.color != color && !(/^#([0-9A-F]{3})+$/i.test(color))) return;
+    stage.configure({ background: color });
+  }
+
+  const adjustStageBgTextWidth = (color: string) => {
+    if (stageBgInputRef.current) {
+      stageBgInputRef.current.style.width = Math.max(color.length, 2) + "ch";
+    }
+  }
   useLayoutEffect(() => {
     cnvasRef.current?.append(stage.finalBuffer);
     return () => stage.finalBuffer.remove();
@@ -61,15 +76,27 @@ export function MotionCanvasPlayer({ player }: { player: Player | undefined }) {
   return (
     <div className="relative py-3">
       <div className="w-3/6 rounded-2xl bg-gray-400  backdrop-filter backdrop-blur-sm bg-opacity-40  left-0 right-0 mx-auto top-5 shadow-sm flex">
-        <div className="grow flex justify-center cursor-pointer hover:bg-gray-200 rounded-s-2xl h-9 items-center" onClick={startPlay}>
+        <div className="grow flex basis-1 justify-center cursor-pointer hover:bg-gray-200 rounded-s-2xl h-9 items-center" onClick={startPlay}>
           {!!playerState?.paused ? <PlayIcon /> : <PauseIcon />}
         </div>
         {/* <div className={`grow flex justify-center cursor-pointer hover:bg-gray-200 items-center ${playerState.loop ? "text-blue-500" : ""}`} onClick={toggleLoop}>
           <MotionCanvasLibraryIcon />
         </div> */}
-        <div className={`grow flex justify-center cursor-pointer hover:bg-gray-200 rounded-e-2xl h-9 items-center ${playerState?.loop ? "text-blue-500" : ""}`} onClick={toggleLoop}>
+        <div className={`grow flex basis-1 justify-center cursor-pointer hover:bg-gray-200 h-9 items-center ${playerState?.loop ? "text-blue-500" : ""}`} onClick={toggleLoop}>
           <RepeatIcon />
         </div>
+        {
+          !playerState?.paused &&
+          <div className={`grow flex basis-1 justify-center cursor-pointer hover:bg-gray-200 rounded-e-2xl h-9 items-center ${playerState?.loop ? "text-blue-500" : ""}`} onClick={() => stageBgInputRef.current?.focus()}>
+            <form className={`flex justify-center h-2/3`} onSubmit={changStageBackgroundColor}>
+              <input ref={stageBgInputRef} type="text" className={`bg-transparent focus:bg-white w-2 box-content px-2 rounded-sm`} onChange={(val) => adjustStageBgTextWidth(val.target.value)} />
+              <button type="submit">
+                <GoodScoreIcon />
+              </button>
+            </form>
+          </div>
+        }
+
       </div>
 
       {/* backdrop-blur-sm bg-transparent  */}
