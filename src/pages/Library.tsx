@@ -13,18 +13,18 @@ import { useLoaderData } from "react-router-dom";
 
 function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (node: CustomNode) => void }) {
   const [activeId, setActiveId] = useState<string | undefined>();
-  const { customeNodes, paramNode } = useLoaderData() as { customeNodes: CustomNode[], paramNode: CustomNode };
+  const { customeNodes, parameterNode } = useLoaderData() as { customeNodes: CustomNode[], parameterNode: CustomNode };
 
   useEffect(() => {
-    if (paramNode) {
-      setSelectedNode(paramNode);
-      setActiveId(paramNode.id);
+    if (parameterNode) {
+      setSelectedNode(parameterNode);
+      setActiveId(parameterNode.id);
       return;
     }
     setSelectedNode(customeNodes[0]);
     setActiveId(customeNodes[0]?.id);
    
-  }, [customeNodes, paramNode]);
+  }, [customeNodes, parameterNode]);
 
   const selectNode = (node: CustomNode) => {
     setSelectedNode(node);
@@ -70,7 +70,7 @@ export default function Library() {
   const [section, setSection] = useState<"preview" | "code" | "usage">("preview")
   const [customNode, setCustomNode] = useState<CustomNode | null>(null);
   const [nodeCode, setNodeCode] = useState<CustomNodeCode | null>(null);
-  const { players, addComponentPlayer } = usePlayersContext();
+  const { playersData, addComponentPlayerData } = usePlayersContext();
   const [switchingPlayer, setSwitchingPlayer] = useState<boolean>(false);
   const [nodePlayer, setNodePlayer] = useState<Player | null>(null);
 
@@ -80,14 +80,14 @@ export default function Library() {
         const fullCode = combineCodes([nodeCode?.code || "", nodeCode?.usage || ""]);
         const scene = await createSceneFromCode(fullCode);
         const player = createPlayer(scene);
-        addComponentPlayer(customNode.id, player);
+        addComponentPlayerData(customNode.id, player, nodeCode);
         setNodePlayer(player);
         setSwitchingPlayer(false);
       }
 
-      const player = players[customNode.id];
-      if (player) {
-        setNodePlayer(player);
+      if (playersData[customNode.id]) {
+        setNodePlayer(playersData[customNode.id].player);
+        setNodeCode(playersData[customNode.id].nodeCode)
         return;
       }
       setSwitchingPlayer(true);
