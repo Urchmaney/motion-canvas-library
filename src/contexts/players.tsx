@@ -1,13 +1,14 @@
 import { Player } from "@motion-canvas/core";
 import { createContext, ReactNode, useContext, useState } from "react";
+import { CustomNodeCode } from "../interfaces";
 
 interface PlayerConfig {
-  players: { [key: string] : Player },
-  addComponentPlayer: (componentId: string, player: Player) => void
+  playersData: { [key: string] : { player: Player, nodeCode: CustomNodeCode } },
+  addComponentPlayerData: (componentId: string, player: Player, nodeCode: CustomNodeCode) => void
 }
 
 const PlayersContext = createContext<PlayerConfig>({
-  players: {}, addComponentPlayer: () => {}
+  playersData: {}, addComponentPlayerData: () => {}
 });
 
 export function usePlayersContext(): PlayerConfig {
@@ -15,14 +16,14 @@ export function usePlayersContext(): PlayerConfig {
 }
 
 export function PlayersProvider({ children }: { children: ReactNode }){
-  const [players, setPlayers] = useState<{ [key: string] : Player }>({});
+  const [playersData, setPlayersData] = useState<Record<string,{ player: Player, nodeCode: CustomNodeCode }>>({});
 
-  const addComponentPlayer = (componentId: string, player: Player) => {
-    setPlayers((players) => ({ ...players, [componentId]: player }))
+  const addComponentPlayerData = (componentId: string, player: Player, nodeCode: CustomNodeCode) => {
+    setPlayersData((data) => ({ ...data, [componentId]:  { player, nodeCode } }))
   }
     return (
       <PlayersContext.Provider value={{
-        players, addComponentPlayer
+        playersData, addComponentPlayerData
       }}>
         {children}
       </PlayersContext.Provider>
