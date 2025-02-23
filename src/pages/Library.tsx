@@ -3,11 +3,11 @@ import { SearchIcon, Loader } from "../components/icons";
 import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
-import { getCustomNodeCode } from "../services/library";
 import type { Player } from "@motion-canvas/core";
 import { combineCodes, createPlayer, createSceneFromCode } from "../util";
 import { usePlayersContext } from "../contexts";
 import { useLoaderData } from "react-router-dom";
+import {firebaseLibrary} from "../services";
 
 
 
@@ -73,7 +73,6 @@ export default function Library() {
   const { playersData, addComponentPlayerData } = usePlayersContext();
   const [switchingPlayer, setSwitchingPlayer] = useState<boolean>(false);
   const [nodePlayer, setNodePlayer] = useState<Player | null>(null);
-
   useEffect(() => {
     if (customNode) {
       const setupNodePlayer = async (nodeCode: CustomNodeCode) => {
@@ -91,7 +90,7 @@ export default function Library() {
         return;
       }
       setSwitchingPlayer(true);
-      getCustomNodeCode(customNode.id).then(code => {
+      firebaseLibrary.getCustomNodeCode(customNode.id).then(code => {
         setNodeCode(code);
         return setupNodePlayer(code);
       }).then(
