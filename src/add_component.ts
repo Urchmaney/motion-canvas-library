@@ -3,7 +3,7 @@ import FirebaseLibrary from "./services/firebase_library";
 import 'dotenv/config';
 import { getFirestore } from "firebase/firestore";
 
-const id = "6glpZjP6JHa6M36xoIbz"
+const id = ""
 
 
 const code = `
