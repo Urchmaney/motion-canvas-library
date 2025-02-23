@@ -10,18 +10,19 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "add:node": "npx tsx src/add_component.ts"
   },
   "dependencies": {
     "@motion-canvas/2d": "^3.17.1",
     "@motion-canvas/core": "^3.17.0",
     "esbuild-wasm": "^0.24.0",
+    "firebase": "^11.0.1",
     "prismjs": "^1.29.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
-    "react-simple-code-editor": "^0.14.1",
-    "firebase": "^11.0.1"
+    "react-simple-code-editor": "^0.14.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
@@ -30,6 +31,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^16.4.7",
     "esbuild": "^0.24.0",
     "eslint": "^9.13.0",
     "eslint-plugin-react-hooks": "^5.0.0",
