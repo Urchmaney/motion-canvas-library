@@ -12,7 +12,7 @@ export default function HomeLayout() {
       <div className="absolute h-screen w-32 bg-left-curtain bg-contain bg-no-repeat right-0 animate-upward top-0 -z-10">
 
       </div>
-      <div className="container mx-auto px-2">
+      <div className="container h-screen mx-auto px-2">
         <div className="py-3 flex justify-between sticky top-0 z-10 bg-transparent backdrop-filter backdrop-blur-sm bg-opacity-40 border-b border-[#E2E9ED]">
           <div className="flex items-center gap-8">
             <Link to={"/"}>
@@ -38,7 +38,7 @@ export default function HomeLayout() {
           </div>
         </div>
 
-        <div className="pt-5">
+        <div className="pt-5 h-screen">
           <Outlet />
         </div>
       </div>

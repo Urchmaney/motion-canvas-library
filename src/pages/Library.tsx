@@ -99,17 +99,17 @@ export default function Library() {
   }, [customNode?.id]);
 
   return (
-    <div className="md:flex gap-14 md:pt-8">
+    <div className="md:flex gap-14 md:pt-8 h-full">
       <div className="basis-1/4">
         <ComponentsListSidebar setSelectedNode={(node: CustomNode) => setCustomNode(node)} />
       </div>
-      <div className="grow min-w-0 pt-10 md:pt-0">
-        <h2 className="font-bold text-2xl">{customNode?.name}</h2>
-        <p className="text-gray-500 py-2 text-lg">
+      <div className="grow min-w-0 pt-10 md:pt-0 flex flex-col">
+        <h2 className="flex font-bold text-2xl">{customNode?.name}</h2>
+        <p className="flex text-gray-500 py-2 text-lg">
           {customNode?.description}
         </p>
 
-        <div className="py-5">
+        <div className="flex-auto py-5">
           <div className="border-b border-gray-200 flex gap-3">
             <p className={`px-3 cursor-pointer ${section === "preview" ? "border-b border-black font-bold" : ""}`} onClick={() => setSection("preview")}>
               Preview
@@ -122,7 +122,7 @@ export default function Library() {
             </p>
           </div>
 
-          <div className="w-full">
+          <div className="w-full py-3">
             {
               section === "preview" && ((nodePlayer && !switchingPlayer) ? <MotionCanvasPlayer player={nodePlayer} /> : (<div className="w-full h-full flex justify-center items-center">
                 <Loader size={60} />

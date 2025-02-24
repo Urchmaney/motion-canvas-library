@@ -26,7 +26,7 @@ export function MotionCanvasPlayer({ player, stageBg }: { player?: Player, stage
       const stageConfiguration = {
         background: stageBg,
         range: [0, Infinity],
-        size: new Vector2((cnvasRef.current?.clientWidth || 1920) - 40, cnvasRef.current?.clientHeight || 1200),
+        size: new Vector2(1920, 1200),
         audioOffset: 0
       }
       player.configure({
@@ -74,7 +74,7 @@ export function MotionCanvasPlayer({ player, stageBg }: { player?: Player, stage
   }, [stage, cnvasRef]);
 
   return (
-    <div className="relative py-3">
+    <div className="flex flex-col gap-3">
       <div className="w-3/6 rounded-2xl bg-gray-400  backdrop-filter backdrop-blur-sm bg-opacity-40  left-0 right-0 mx-auto top-5 shadow-sm flex">
         <div className="grow flex basis-1 justify-center cursor-pointer hover:bg-gray-200 rounded-s-2xl h-9 items-center" onClick={startPlay}>
           {!!playerState?.paused ? <PlayIcon /> : <PauseIcon />}
@@ -100,14 +100,19 @@ export function MotionCanvasPlayer({ player, stageBg }: { player?: Player, stage
       </div>
 
       {/* backdrop-blur-sm bg-transparent  */}
-      <div ref={cnvasRef} className="px-5 pt-2 bg-no-repeat bg-cover w-full min-h-[700px]">
-        {
-          !player &&
-          <div className="w-full h-full flex justify-center items-center">
-            <Loader size={60} />
-          </div>
-        }
+      <div className="flex relative w-full justify-center items-center bg-black px-5 pt-2 max-h-[700px]">
+        <div ref={cnvasRef} className=" bg-no-repeat bg-cover " style={{
+          transform: `translate(0px, 0px) scale(${0.4402237894654889})`,
+        }}>
+          {
+            !player &&
+            <div className="w-full h-full flex justify-center items-center">
+              <Loader size={60} />
+            </div>
+          }
+        </div>
       </div>
+
     </div>
   )
 }
