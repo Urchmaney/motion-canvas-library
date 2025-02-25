@@ -1,9 +1,9 @@
 import { Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
-import { FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon, RepeatIcon, Loader } from "./icons";
 import GoodScoreIcon from "./icons/GoodScore";
 
-export function MotionCanvasPlayer({ player, stageBg }: { player?: Player, stageBg?: string }) {
+export function MotionCanvasPlayer({ player, stageBg = "#000" }: { player?: Player, stageBg?: string }) {
   const [stage] = useState<Stage>(new Stage());
   const [playerState, setPlayerState] = useState<PlayerState | undefined>(undefined);
 
@@ -63,11 +63,14 @@ export function MotionCanvasPlayer({ player, stageBg }: { player?: Player, stage
     stage.configure({ background: color });
   }
 
-  const adjustStageBgTextWidth = (color: string) => {
+  const adjustStageBgTextWidth = (event: ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value;
     if (stageBgInputRef.current) {
-      stageBgInputRef.current.style.width = Math.max(color.length, 2) + "ch";
+      stageBgInputRef.current.style.width = Math.max(val.length, 2) + "ch";
     }
   }
+
+
   useLayoutEffect(() => {
     cnvasRef.current?.append(stage.finalBuffer);
     return () => stage.finalBuffer.remove();
@@ -89,7 +92,7 @@ export function MotionCanvasPlayer({ player, stageBg }: { player?: Player, stage
           !playerState?.paused &&
           <div className={`grow flex basis-1 justify-center cursor-pointer hover:bg-gray-200 rounded-e-2xl h-9 items-center ${playerState?.loop ? "text-blue-500" : ""}`} onClick={() => stageBgInputRef.current?.focus()}>
             <form className={`flex justify-center h-2/3`} onSubmit={changStageBackgroundColor}>
-              <input ref={stageBgInputRef} type="text" className={`bg-transparent focus:bg-white w-2 box-content px-2 rounded-sm`} onChange={(val) => adjustStageBgTextWidth(val.target.value)} />
+              <input style={{ width: `${stageBg.length}ch`}} ref={stageBgInputRef} defaultValue={stageBg} type="text" className={`bg-transparent focus:bg-white w-2 box-content px-2 rounded-sm`} onChange={adjustStageBgTextWidth} />
               <button type="submit">
                 <GoodScoreIcon />
               </button>
