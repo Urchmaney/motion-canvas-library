@@ -124,7 +124,7 @@ export default function Library() {
 
           <div className="w-full py-3">
             {
-              section === "preview" && ((nodePlayer && !switchingPlayer) ? <MotionCanvasPlayer player={nodePlayer} /> : (<div className="w-full h-full flex justify-center items-center">
+              section === "preview" && ((nodePlayer && !switchingPlayer) ? <MotionCanvasPlayer player={nodePlayer} stageBg={customNode?.bg} /> : (<div className="w-full h-full flex justify-center items-center">
                 <Loader size={60} />
               </div>))
             }
