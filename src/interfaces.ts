@@ -2,7 +2,7 @@ export type CustomNode = {
   id: string
   name: string
   description: string
-  code: string
+  bg?: string
   numberOfCopies: number
 }
 
