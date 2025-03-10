@@ -38,7 +38,7 @@ export default function HomeLayout() {
           </div>
         </div>
 
-        <div className="pt-5 h-screen">
+        <div className="pt-5 min-h-[80vh]">
           <Outlet />
         </div>
       </div>
