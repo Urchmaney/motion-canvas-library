@@ -44,7 +44,7 @@ export default function Try() {
     });
   }
   return (
-    <div className="w-full h-full flex flex-col relative overflow-hidden">
+    <div className="w-full h-[calc(100vh-10vh)] flex flex-col relative overflow-hidden">
       <div className="basis-20 flex flex-col justify-end">
         <div className="px-5 flex gap-3">
           {
@@ -60,7 +60,7 @@ export default function Try() {
           </div>
         </div>
       </div>
-      <div className=" bg-[#FBFCFD] border border-cyan-100">
+      <div className=" bg-[#FBFCFD] border border-cyan-100 overflow-y-scroll">
         <Editor code={tabCodes[currentTab]} onCodeChange={tabCodeChange} />
       </div>
 
