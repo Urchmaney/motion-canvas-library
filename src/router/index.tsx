@@ -1,10 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import pages from "../pages";
 import layout from "../layouts";
-import Try from "../pages/Try";
 import { loadLibraryNodes } from "./loaders";
 
-const { Home, Library } = pages;
+const { Home, Library, Try } = pages;
 const { HomeLayout } = layout;
 
 export default createBrowserRouter([
