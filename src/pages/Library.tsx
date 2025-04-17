@@ -6,8 +6,9 @@ import type { CustomNode, CustomNodeCode } from "../interfaces";
 import type { Player } from "@motion-canvas/core";
 import { combineCodes, createPlayer, createSceneFromCode } from "../util";
 import { usePlayersContext } from "../contexts";
-import { useLoaderData } from "react-router-dom";
-import {firebaseLibrary} from "../services";
+import { NavLink, useLoaderData } from "react-router-dom";
+import { firebaseLibrary } from "../services";
+import EditIcon from "../components/icons/Edit";
 
 
 
@@ -23,7 +24,7 @@ function ComponentsListSidebar({ setSelectedNode }: { setSelectedNode: (node: Cu
     }
     setSelectedNode(customeNodes[0]);
     setActiveId(customeNodes[0]?.id);
-   
+
   }, [customeNodes, parameterNode]);
 
   const selectNode = (node: CustomNode) => {
@@ -104,7 +105,18 @@ export default function Library() {
         <ComponentsListSidebar setSelectedNode={(node: CustomNode) => setCustomNode(node)} />
       </div>
       <div className="grow min-w-0 pt-10 md:pt-0 flex flex-col">
-        <h2 className="flex font-bold text-2xl">{customNode?.name}</h2>
+        <div className="flex justify-between">
+          <h2 className="flex font-bold text-2xl">{customNode?.name} </h2>
+
+          <NavLink
+            to={`/try/${customNode?.id}`}
+            className={({ isActive, isPending }) =>
+              isPending ? "pending" : isActive ? "active" : ""
+            }
+          >
+            <EditIcon />
+          </NavLink>
+        </div>
         <p className="flex text-gray-500 py-2 text-lg">
           {customNode?.description}
         </p>

@@ -21,7 +21,7 @@ export default createBrowserRouter([
         loader: loadLibraryNodes,
       },
       {
-        path: "try",
+        path: "try/:componentId?",
         element: <Try />
       }
     ]
