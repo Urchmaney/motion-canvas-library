@@ -1,8 +1,10 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Editor, MotionCanvasPlayer } from "../components";
 import { Player } from "@motion-canvas/core";
 import { CloseIcon, Loader, PlayIcon } from "../components/icons";
 import { combineCodes, createPlayer, createSceneFromCode, getCodeFromLocalStorage, saveCodeToLocalStorage } from "../util";
+import { useParams } from "react-router-dom";
+import { usePlayersContext } from "../contexts";
 
 interface ProcessingState {
   state: "idle" | "processing" | "error" | "finished"
@@ -14,10 +16,25 @@ import {} from "@motion-canvas/core";
 import {} from "@motion-canvas/2d";
 `
 
+const tabs = ["Custom", "Usage"] as const;
+
+type Tab = typeof tabs[number]
+
 export default function Try() {
-  const [tabs] = useState<string[]>(["Custom", "Usage"]);
+  const { componentId } = useParams();
+  const { playersData } = usePlayersContext();
+
+  const componentCodes : Partial<Record<Tab, string | null>> = useMemo(() => {
+    const nodeCode = playersData[componentId || ""]?.nodeCode
+    return tabs.reduce<Partial<Record<Tab, string | null>>>((acc, x) => {
+      if (x === "Custom") acc[x] = nodeCode?.code;
+      else if (x === "Usage") acc[x] = nodeCode?.usage
+      return acc
+    }, {});
+  }, [componentId])
+
   const [currentTab, setCurrentTab] = useState<number>(0);
-  const [tabCodes, setTabCodes] = useState<string[]>(tabs.map(x => getCodeFromLocalStorage(x) || defaultImport));
+  const [tabCodes, setTabCodes] = useState<string[]>(tabs.map(x => componentCodes[x] || getCodeFromLocalStorage(x) || defaultImport));
   const [processing, setProcessing] = useState<ProcessingState>({ state: "idle" });
   const [player, setPlayer] = useState<Player | null>(null);
 
