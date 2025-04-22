@@ -1,6 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import GithubIcon from "../components/icons/Github";
 import { MotionCanvasLibraryIcon } from "../components/icons";
+import { ToastContainer } from "react-toastify";
 
 export default function HomeLayout() {
   return (
@@ -13,6 +14,7 @@ export default function HomeLayout() {
 
       </div>
       <div className="container h-screen mx-auto px-2">
+      <ToastContainer />
         <div className="py-3 flex justify-between sticky top-0 z-10 bg-transparent backdrop-filter backdrop-blur-sm bg-opacity-40 border-b border-[#E2E9ED]">
           <div className="flex items-center gap-8">
             <Link to={"/"}>
