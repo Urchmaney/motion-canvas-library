@@ -71,7 +71,7 @@ export default function Try() {
               <div key={`tab_${i}`} className={`${i === currentTab ? "bg-[#FBFCFD]" : ""} p-3 rounded-t px-6 cursor-pointer`} onClick={() => setCurrentTab(i)}>{tab}</div>
             ))
           }
-          <div className="grow px-6 flex justify-end items-center pb-2 gap-6">
+          <div className="grow px-6 flex justify-end items-center pb-2 gap-6 flex-wrap">
 
             <button className="p-2 flex gap-1 items-center bg-gray-300 rounded-md h-10 font-semibold" onClick={() => toast("Under Construction!!!")}>
                Submit <UploadIcon size={20} />
