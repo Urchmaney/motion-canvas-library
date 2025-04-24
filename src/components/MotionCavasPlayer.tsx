@@ -3,7 +3,7 @@ import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useRef
 import { PlayIcon, PauseIcon, RepeatIcon, Loader } from "./icons";
 import GoodScoreIcon from "./icons/GoodScore";
 
-export function MotionCanvasPlayer({ player, stageBg = "#000" }: { player?: Player, stageBg?: string }) {
+export default function MotionCanvasPlayer({ player, stageBg = "#000" }: { player?: Player, stageBg?: string }) {
   const [stage] = useState<Stage>(new Stage());
   const [playerState, setPlayerState] = useState<PlayerState | undefined>(undefined);
 

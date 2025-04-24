@@ -8,6 +8,8 @@ import RepeatIcon from "./Repeat";
 import SearchIcon from "./Search";
 import Loader from "./Loader";
 import CloseIcon from "./Close";
+import MotionCanvasPlaying from "./MotionCanvasPlaying";
+import UploadIcon from "./Upload";
 
 export {
   GithubIcon,
@@ -19,5 +21,7 @@ export {
   MotionCanvasLibraryIcon,
   CopyIcon,
   CloseIcon,
-  Loader
+  Loader,
+  MotionCanvasPlaying,
+  UploadIcon
 }

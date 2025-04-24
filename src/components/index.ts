@@ -1,7 +1,9 @@
 import Editor from "./Editor";
-import { MotionCanvasPlayer } from "./MotionCavasPlayer";
+import Modal from "./Modal";
+import MotionCanvasPlayer from "./MotionCavasPlayer";
 
 export {
   Editor,
-  MotionCanvasPlayer
+  MotionCanvasPlayer,
+  Modal
 }
