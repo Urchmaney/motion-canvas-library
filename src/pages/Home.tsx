@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { MotionCanvasPlaying } from "../components/icons";
 
-
 export default function Home() {
   return (
     <div className="h-[calc(100vh-150px)] flex flex-col">
