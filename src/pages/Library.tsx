@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SearchIcon, Loader } from "../components/icons";
-import { MotionCanvasPlayer } from "../components/MotionCavasPlayer";
+import { MotionCanvasPlayer } from "../components";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
 import type { Player } from "@motion-canvas/core";
