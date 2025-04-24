@@ -1,12 +1,11 @@
 import { useMemo, useState } from "react"
-import { Editor, MotionCanvasPlayer } from "../components";
+import { Editor, Modal, MotionCanvasPlayer } from "../components";
 import { Player } from "@motion-canvas/core";
-import { CloseIcon, Loader, PlayIcon } from "../components/icons";
+import { CloseIcon, Loader, PlayIcon, UploadIcon } from "../components/icons";
 import { combineCodes, createPlayer, createSceneFromCode, getCodeFromLocalStorage, saveCodeToLocalStorage } from "../util";
 import { useParams } from "react-router-dom";
 import { usePlayersContext } from "../contexts";
 import { toast } from 'react-toastify';
-import UploadIcon from "../components/icons/Upload";
 
 interface ProcessingState {
   state: "idle" | "processing" | "error" | "finished"
@@ -25,7 +24,6 @@ type Tab = typeof tabs[number]
 export default function Try() {
   const { componentId } = useParams();
   const { playersData } = usePlayersContext();
-
   const componentCodes: Partial<Record<Tab, string | null>> = useMemo(() => {
     const nodeCode = playersData[componentId || ""]?.nodeCode
     return tabs.reduce<Partial<Record<Tab, string | null>>>((acc, x) => {
@@ -34,11 +32,17 @@ export default function Try() {
       return acc
     }, {});
   }, [componentId]);
-
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [tabCodes, setTabCodes] = useState<string[]>(tabs.map(x => componentCodes[x] || getCodeFromLocalStorage(x) || defaultImport));
   const [processing, setProcessing] = useState<ProcessingState>({ state: "idle" });
   const [player, setPlayer] = useState<Player | null>(null);
+
+  const [openSubmitForm, setOpenSubmitForm] = useState<boolean>(false);
+
+  const submitForm = (e : React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    toast("Under Construction!!!");
+  }
 
   const tabCodeChange = (code: string) => {
     saveCodeToLocalStorage(tabs[currentTab], code);
@@ -73,8 +77,8 @@ export default function Try() {
           }
           <div className="grow px-6 flex justify-end items-center pb-2 gap-6 flex-wrap">
 
-            <button className="p-2 flex gap-1 items-center bg-gray-300 rounded-md h-10 font-semibold" onClick={() => toast("Under Construction!!!")}>
-               Submit <UploadIcon size={20} />
+            <button type="button" className="p-2 flex gap-1 items-center bg-gray-300 rounded-md h-10 font-semibold" onClick={() => { setOpenSubmitForm(true) }}>
+              Submit <UploadIcon size={20} />
             </button>
             <button className="p-3" onClick={processCode}>
               <PlayIcon size={30} />
@@ -103,6 +107,31 @@ export default function Try() {
           )
         }
       </div>
+
+      <Modal isOpen={openSubmitForm} onClose={() => { setOpenSubmitForm(false) }}>
+        <form className="flex flex-col gap-4" onSubmit={submitForm}>
+          <div>
+            <h3 className="text-lg text-center font-semibold">Submit your component to be added into the library</h3>
+          </div>
+          <hr />
+          <div>
+            <label htmlFor="github_email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Github Username</label>
+            <input type="text" name="github_email" id="github_email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="username" required />
+          </div>
+
+          <div>
+            <label htmlFor="component_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Component Name</label>
+            <input type="text" name="component_name" id="component_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name" required />
+          </div>
+
+          <div>
+            <label htmlFor="component_desc" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Component Name</label>
+            <textarea name="component_desc" id="component_desc" rows={4} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="description" required />
+          </div>
+    
+          <button type="submit" className="w-full text-white bg-[#2f4f5f] hover:bg-[#2f4f4f] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#2f4f5f] dark:hover:bg-[#2f4f4f] dark:focus:ring-blue-300">Submit</button>
+        </form>
+      </Modal>
     </div>
   )
 }
