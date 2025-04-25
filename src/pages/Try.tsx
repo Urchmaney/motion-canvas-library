@@ -1,18 +1,13 @@
 import { useMemo, useState } from "react"
 import { Editor, Modal, MotionCanvasPlayer } from "../components";
-import { Player } from "@motion-canvas/core";
 import { CloseIcon, Loader, PlayIcon, UploadIcon } from "../components/icons";
-import { combineCodes, createPlayer, createSceneFromCode, getCodeFromLocalStorage, saveCodeToLocalStorage } from "../util";
+import { combineCodes, getCodeFromLocalStorage, saveCodeToLocalStorage } from "../util";
 import { useParams } from "react-router-dom";
 import { usePlayersContext } from "../contexts";
 import { toast } from 'react-toastify';
 import { firebaseLibrary } from "../services";
 import { CustomNode } from "../interfaces";
-
-interface ProcessingState {
-  state: "idle" | "processing" | "error" | "finished"
-  message?: string
-}
+import { usePlayerProcessor } from "../hooks";
 
 const defaultImport = `
 import {} from "@motion-canvas/core";
@@ -36,9 +31,8 @@ export default function Try() {
   }, [componentId]);
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [tabCodes, setTabCodes] = useState<string[]>(tabs.map(x => componentCodes[x] || getCodeFromLocalStorage(x) || defaultImport));
-  const [processing, setProcessing] = useState<ProcessingState>({ state: "idle" });
-  const [player, setPlayer] = useState<Player | null>(null);
 
+  const { player, processCode, processingState, setProcessingState } = usePlayerProcessor();
   const [openSubmitForm, setOpenSubmitForm] = useState<boolean>(false);
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -65,19 +59,6 @@ export default function Try() {
     })
   }
 
-  const processCode = () => {
-    setProcessing({ state: "processing" });
-    createSceneFromCode(combineCodes(tabCodes)).then((scene) => {
-      const player = createPlayer(scene);
-      setPlayer(player);
-      setProcessing({ state: "finished" });
-    }).catch(e => {
-      setProcessing({
-        state: "error",
-        message: e.message
-      })
-    });
-  }
   return (
     <div className="w-full h-[calc(100vh-10vh)] flex flex-col relative overflow-hidden">
       <div className="basis-20 flex flex-col justify-end">
@@ -92,7 +73,7 @@ export default function Try() {
             <button type="button" className="p-2 flex gap-1 items-center bg-gray-300 rounded-md h-10 font-semibold" onClick={() => { setOpenSubmitForm(true) }}>
               Submit <UploadIcon size={20} />
             </button>
-            <button className="p-3" onClick={processCode}>
+            <button className="p-3" onClick={() => processCode(combineCodes(tabCodes))}>
               <PlayIcon size={30} />
             </button>
 
@@ -103,19 +84,19 @@ export default function Try() {
         <Editor code={tabCodes[currentTab]} onCodeChange={tabCodeChange} />
       </div>
 
-      <div className={`absolute w-full top-0 min-h-40 bg-[#DEE9EE] transition-all duration-500 ${processing.state !== "idle" ? "right-0" : "-right-[100vw]"}`}>
-        <div className="flex justify-end p-3"><button onClick={() => setProcessing({ state: "idle" })}><CloseIcon size={20} /></button></div>
+      <div className={`absolute w-full top-0 min-h-40 bg-[#DEE9EE] transition-all duration-500 ${processingState.state !== "idle" ? "right-0" : "-right-[100vw]"}`}>
+        <div className="flex justify-end p-3"><button onClick={() => setProcessingState({ state: "idle" })}><CloseIcon size={20} /></button></div>
         {
-          processing.state === "processing" && (
+          processingState.state === "processing" && (
             <div className="w-full h-full flex justify-center items-center">
               <Loader size={60} />
             </div>
           )
         }
-        {processing.state === "finished" && player && <MotionCanvasPlayer player={player} />}
+        {processingState.state === "finished" && player && <MotionCanvasPlayer player={player} />}
         {
-          processing.state === "error" && (
-            <div className="flex justify-center text-xl">{processing.message}</div>
+          processingState.state === "error" && (
+            <div className="flex justify-center text-xl">{processingState.message}</div>
           )
         }
       </div>
