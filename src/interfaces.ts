@@ -4,6 +4,8 @@ export type CustomNode = {
   description: string
   bg?: string
   numberOfCopies: number
+  author_github?: string
+  approved: boolean
 }
 
 export type CustomNodeCode = {

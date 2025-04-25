@@ -6,6 +6,8 @@ import { combineCodes, createPlayer, createSceneFromCode, getCodeFromLocalStorag
 import { useParams } from "react-router-dom";
 import { usePlayersContext } from "../contexts";
 import { toast } from 'react-toastify';
+import { firebaseLibrary } from "../services";
+import { CustomNode } from "../interfaces";
 
 interface ProcessingState {
   state: "idle" | "processing" | "error" | "finished"
@@ -39,9 +41,19 @@ export default function Try() {
 
   const [openSubmitForm, setOpenSubmitForm] = useState<boolean>(false);
 
-  const submitForm = (e : React.FormEvent<HTMLFormElement>) => {
+  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast("Under Construction!!!");
+    try {
+      const github_name = (e.currentTarget.elements.namedItem("github_email") as HTMLInputElement).value;
+      const component_name = (e.currentTarget.elements.namedItem("component_name") as HTMLInputElement).value;
+      const component_desc = (e.currentTarget.elements.namedItem("component_desc") as HTMLInputElement).value;
+      const customeNode: Omit<CustomNode, "id"> = { name: component_name, author_github: github_name, description: component_desc, approved: false, numberOfCopies: 0 };
+      const node = await firebaseLibrary.addNewFullNode(customeNode , { code: tabCodes[0], usage: tabCodes[1] });
+      setOpenSubmitForm(false);
+      toast.success(`component with id '${node.id}' successfully submitted.`);
+    } catch (e) {
+      toast.error("Error occured while sending component.");
+    }
   }
 
   const tabCodeChange = (code: string) => {
@@ -128,7 +140,7 @@ export default function Try() {
             <label htmlFor="component_desc" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Component Name</label>
             <textarea name="component_desc" id="component_desc" rows={4} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="description" required />
           </div>
-    
+
           <button type="submit" className="w-full text-white bg-[#2f4f5f] hover:bg-[#2f4f4f] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#2f4f5f] dark:hover:bg-[#2f4f4f] dark:focus:ring-blue-300">Submit</button>
         </form>
       </Modal>
