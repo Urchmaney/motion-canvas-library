@@ -4,11 +4,12 @@ import { MotionCanvasPlayer } from "../components";
 import { CodeDisplay } from "../components/CodeDisplay";
 import type { CustomNode, CustomNodeCode } from "../interfaces";
 import type { Player } from "@motion-canvas/core";
-import { combineCodes, createPlayer, createSceneFromCode } from "../util";
+import { combineCodes } from "../util";
 import { usePlayersContext } from "../contexts";
 import { NavLink, useLoaderData } from "react-router-dom";
 import { firebaseLibrary } from "../services";
 import EditIcon from "../components/icons/Edit";
+import {usePlayerProcessor} from "../hooks";
 
 
 
@@ -71,29 +72,25 @@ export default function Library() {
   const [section, setSection] = useState<"preview" | "code" | "usage">("preview")
   const [customNode, setCustomNode] = useState<CustomNode | null>(null);
   const [nodeCode, setNodeCode] = useState<CustomNodeCode | null>(null);
-  const { playersData, addComponentPlayerData } = usePlayersContext();
   const [switchingPlayer, setSwitchingPlayer] = useState<boolean>(false);
-  const [nodePlayer, setNodePlayer] = useState<Player | null>(null);
+
+  const { playersData, addComponentPlayerData } = usePlayersContext();
+  const { player, setPlayer, processCode } = usePlayerProcessor();
+
   useEffect(() => {
     if (customNode) {
-      const setupNodePlayer = async (nodeCode: CustomNodeCode) => {
-        const fullCode = combineCodes([nodeCode?.code || "", nodeCode?.usage || ""]);
-        const scene = await createSceneFromCode(fullCode);
-        const player = createPlayer(scene);
-        addComponentPlayerData(customNode.id, player, nodeCode);
-        setNodePlayer(player);
-        setSwitchingPlayer(false);
-      }
-
       if (playersData[customNode.id]) {
-        setNodePlayer(playersData[customNode.id].player);
-        setNodeCode(playersData[customNode.id].nodeCode)
+        setPlayer(playersData[customNode.id].player);
+        setNodeCode(playersData[customNode.id].nodeCode);
         return;
       }
       setSwitchingPlayer(true);
       firebaseLibrary.getCustomNodeCode(customNode.id).then(code => {
         setNodeCode(code);
-        return setupNodePlayer(code);
+        return processCode(combineCodes([code?.code || "", code?.usage || ""]), (player: Player) => {
+          addComponentPlayerData(customNode.id, player, code);
+          setSwitchingPlayer(false);
+        })
       }).then(
         _ => console.log("setup complete")).catch(_ => console.log("error setting up"));
     }
@@ -136,7 +133,7 @@ export default function Library() {
 
           <div className="w-full py-3">
             {
-              section === "preview" && ((nodePlayer && !switchingPlayer) ? <MotionCanvasPlayer player={nodePlayer} stageBg={customNode?.bg} /> : (<div className="w-full h-full flex justify-center items-center">
+              section === "preview" && ((player && !switchingPlayer) ? <MotionCanvasPlayer player={player} stageBg={customNode?.bg} /> : (<div className="w-full h-full flex justify-center items-center">
                 <Loader size={60} />
               </div>))
             }
