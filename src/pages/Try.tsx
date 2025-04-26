@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { Editor, Modal, MotionCanvasPlayer } from "../components";
 import { CloseIcon, Loader, PlayIcon, UploadIcon } from "../components/icons";
-import { combineCodes, getCodeFromLocalStorage, saveCodeToLocalStorage } from "../util";
+import { combineCodes, getCodeFromLocalStorage, mapObjectFromAliase, saveCodeToLocalStorage } from "../util";
 import { useParams } from "react-router-dom";
 import { usePlayersContext } from "../contexts";
 import { toast } from 'react-toastify';
@@ -21,14 +21,11 @@ type Tab = typeof tabs[number]
 export default function Try() {
   const { componentId } = useParams();
   const { playersData } = usePlayersContext();
-  const componentCodes: Partial<Record<Tab, string | null>> = useMemo(() => {
-    const nodeCode = playersData[componentId || ""]?.nodeCode
-    return tabs.reduce<Partial<Record<Tab, string | null>>>((acc, x) => {
-      if (x === "Custom") acc[x] = nodeCode?.code;
-      else if (x === "Usage") acc[x] = nodeCode?.usage
-      return acc
-    }, {});
-  }, [componentId]);
+
+  const componentCodes: Partial<Record<Tab, string | null>> = useMemo(
+    () => mapObjectFromAliase<Record<string, string>>(playersData[componentId || ""]?.nodeCode || {}, { "Custom": "code", "Usage": "usage"}), [componentId]
+  );
+
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [tabCodes, setTabCodes] = useState<string[]>(tabs.map(x => componentCodes[x] || getCodeFromLocalStorage(x) || defaultImport));
 
