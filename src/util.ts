@@ -57,3 +57,11 @@ function debouncedSetCodeOnLocalStorage() {
 }
 
 export const saveCodeToLocalStorage = debouncedSetCodeOnLocalStorage();
+
+export function mapObjectFromAliase<T extends Record<string, G>, S extends Record<string, string> = Record<string, string> , G = unknown>(data: T, alias: S): {[id in keyof S]: G } {
+  let result:  Partial<{[id in keyof S]: G }> = {};
+  Object.keys(alias).forEach((x : keyof S)=> {
+    result[x] = data[alias[x]]
+  })
+  return result as {[id in keyof S]: G };
+}
