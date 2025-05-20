@@ -23,11 +23,12 @@ export default function Try() {
   const { playersData } = usePlayersContext();
 
   const componentCodes: Partial<Record<Tab, string | null>> = useMemo(
-    () => mapObjectFromAliase<Record<string, string>>(playersData[componentId || ""]?.nodeCode || {}, { "Custom": "code", "Usage": "usage"}), [componentId]
+    () => mapObjectFromAliase<Record<string, string>>(playersData[componentId || ""]?.nodeCode || {}, { "Custom": "code", "Usage": "usage" }), [componentId]
   );
 
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [tabCodes, setTabCodes] = useState<string[]>(tabs.map(x => componentCodes[x] || getCodeFromLocalStorage(x) || defaultImport));
+  const [stageBg, setStageBg] = useState<string>();
 
   const { player, processCode, processingState, setProcessingState } = usePlayerProcessor();
   const [openSubmitForm, setOpenSubmitForm] = useState<boolean>(false);
@@ -39,7 +40,7 @@ export default function Try() {
       const component_name = (e.currentTarget.elements.namedItem("component_name") as HTMLInputElement).value;
       const component_desc = (e.currentTarget.elements.namedItem("component_desc") as HTMLInputElement).value;
       const customeNode: Omit<CustomNode, "id"> = { name: component_name, author_github: github_name, description: component_desc, approved: false, numberOfCopies: 0 };
-      const node = await firebaseLibrary.addNewFullNode(customeNode , { code: tabCodes[0], usage: tabCodes[1] });
+      const node = await firebaseLibrary.addNewFullNode(customeNode, { code: tabCodes[0], usage: tabCodes[1] });
       setOpenSubmitForm(false);
       toast.success(`component with id '${node.id}' successfully submitted.`);
     } catch (e) {
@@ -90,7 +91,12 @@ export default function Try() {
             </div>
           )
         }
-        {processingState.state === "finished" && player && <MotionCanvasPlayer player={player} />}
+        {processingState.state === "finished" && player &&
+          <MotionCanvasPlayer
+            player={player}
+            stageBg={stageBg}
+            changeStageBg={(color) => setStageBg(color)}
+          />}
         {
           processingState.state === "error" && (
             <div className="flex justify-center text-xl">{processingState.message}</div>

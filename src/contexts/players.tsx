@@ -3,12 +3,13 @@ import { createContext, ReactNode, useContext, useState } from "react";
 import { CustomNodeCode } from "../interfaces";
 
 interface PlayerConfig {
-  playersData: { [key: string] : { player: Player, nodeCode: CustomNodeCode } },
-  addComponentPlayerData: (componentId: string, player: Player, nodeCode: CustomNodeCode) => void
+  playersData: { [key: string] : { player: Player, nodeCode: CustomNodeCode, bg?: string } },
+  addComponentPlayerData: (componentId: string, player: Player, nodeCode: CustomNodeCode, bg?: string) => void
+  savePlayerBg: (componentId: string | undefined, bg: string) => void
 }
 
 const PlayersContext = createContext<PlayerConfig>({
-  playersData: {}, addComponentPlayerData: () => {}
+  playersData: {}, addComponentPlayerData: () => {}, savePlayerBg: () => {}
 });
 
 export function usePlayersContext(): PlayerConfig {
@@ -16,14 +17,20 @@ export function usePlayersContext(): PlayerConfig {
 }
 
 export function PlayersProvider({ children }: { children: ReactNode }){
-  const [playersData, setPlayersData] = useState<Record<string,{ player: Player, nodeCode: CustomNodeCode }>>({});
+  const [playersData, setPlayersData] = useState<Record<string,{ player: Player, nodeCode: CustomNodeCode, bg?:string }>>({});
 
-  const addComponentPlayerData = (componentId: string, player: Player, nodeCode: CustomNodeCode) => {
-    setPlayersData((data) => ({ ...data, [componentId]:  { player, nodeCode } }))
+  const addComponentPlayerData = (componentId: string, player: Player, nodeCode: CustomNodeCode, bg: string = "#000") => {
+    setPlayersData((data) => ({ ...data, [componentId]:  { player, nodeCode, bg } }))
+  }
+
+  const savePlayerBg = (componentId: string | undefined, bg: string) => {
+    if (!componentId) return;
+
+    setPlayersData(data => ({ ...data, [componentId]: { ...data[componentId], bg } } ));
   }
     return (
       <PlayersContext.Provider value={{
-        playersData, addComponentPlayerData
+        playersData, addComponentPlayerData, savePlayerBg
       }}>
         {children}
       </PlayersContext.Provider>

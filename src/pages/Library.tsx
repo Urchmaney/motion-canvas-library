@@ -9,7 +9,7 @@ import { usePlayersContext } from "../contexts";
 import { NavLink, useLoaderData } from "react-router-dom";
 import { firebaseLibrary } from "../services";
 import EditIcon from "../components/icons/Edit";
-import {usePlayerProcessor} from "../hooks";
+import { usePlayerProcessor } from "../hooks";
 
 
 
@@ -74,7 +74,7 @@ export default function Library() {
   const [nodeCode, setNodeCode] = useState<CustomNodeCode | null>(null);
   const [switchingPlayer, setSwitchingPlayer] = useState<boolean>(false);
 
-  const { playersData, addComponentPlayerData } = usePlayersContext();
+  const { playersData, addComponentPlayerData, savePlayerBg } = usePlayersContext();
   const { player, setPlayer, processCode } = usePlayerProcessor();
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export default function Library() {
       firebaseLibrary.getCustomNodeCode(customNode.id).then(code => {
         setNodeCode(code);
         return processCode(combineCodes([code?.code || "", code?.usage || ""]), (player: Player) => {
-          addComponentPlayerData(customNode.id, player, code);
+          addComponentPlayerData(customNode.id, player, code, customNode.bg);
           setSwitchingPlayer(false);
         })
       }).then(
@@ -133,9 +133,15 @@ export default function Library() {
 
           <div className="w-full py-3">
             {
-              section === "preview" && ((player && !switchingPlayer) ? <MotionCanvasPlayer player={player} stageBg={customNode?.bg} /> : (<div className="w-full h-full flex justify-center items-center">
-                <Loader size={60} />
-              </div>))
+              section === "preview" && ((player && !switchingPlayer) ?
+                <MotionCanvasPlayer
+                  player={player}
+                  stageBg={playersData[customNode?.id || ""]?.bg}
+                  changeStageBg={(color) => savePlayerBg(customNode?.id, color)}
+                /> :
+                (<div className="w-full h-full flex justify-center items-center">
+                  <Loader size={60} />
+                </div>))
             }
             {section === "code" && <CodeDisplay code={nodeCode?.code || ""} />}
             {section === "usage" && <CodeDisplay code={nodeCode?.usage || ""} />}
