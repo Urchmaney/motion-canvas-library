@@ -1,9 +1,10 @@
 import { Player, PlayerState, Stage, Vector2 } from "@motion-canvas/core";
-import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PlayIcon, PauseIcon, RepeatIcon, Loader } from "./icons";
-import GoodScoreIcon from "./icons/GoodScore";
 
-export default function MotionCanvasPlayer({ player, stageBg = "#000" }: { player?: Player, stageBg?: string }) {
+export default function MotionCanvasPlayer(
+  { player, stageBg = "#000", changeStageBg = () => { } }: { player?: Player, stageBg?: string, changeStageBg?: (color: string) => void }
+) {
   const [stage] = useState<Stage>(new Stage());
   const [playerState, setPlayerState] = useState<PlayerState | undefined>(undefined);
 
@@ -54,22 +55,11 @@ export default function MotionCanvasPlayer({ player, stageBg = "#000" }: { playe
     player?.toggleLoop();
   }
 
-  const changStageBackgroundColor = (event: FormEvent) => {
-    event.preventDefault();
-    const color = stageBgInputRef.current?.value;
-    const style = new Option().style;
-    style.color = color || "";
-    if (color && style.color != color && !(/^#([0-9A-F]{3})+$/i.test(color))) return;
+  const changeBg = (event: ChangeEvent<HTMLInputElement>) => {
+    const color = event.target.value;
     stage.configure({ background: color });
+    changeStageBg(color);
   }
-
-  const adjustStageBgTextWidth = (event: ChangeEvent<HTMLInputElement>) => {
-    const val = event.target.value;
-    if (stageBgInputRef.current) {
-      stageBgInputRef.current.style.width = Math.max(val.length, 2) + "ch";
-    }
-  }
-
 
   useLayoutEffect(() => {
     cnvasRef.current?.append(stage.finalBuffer);
@@ -91,12 +81,7 @@ export default function MotionCanvasPlayer({ player, stageBg = "#000" }: { playe
         {
           !playerState?.paused &&
           <div className={`grow flex basis-1 justify-center cursor-pointer hover:bg-gray-200 rounded-e-2xl h-9 items-center ${playerState?.loop ? "text-blue-500" : ""}`} onClick={() => stageBgInputRef.current?.focus()}>
-            <form className={`flex justify-center h-2/3`} onSubmit={changStageBackgroundColor}>
-              <input style={{ width: `${stageBg.length}ch`}} ref={stageBgInputRef} defaultValue={stageBg} type="text" className={`bg-transparent focus:bg-white w-2 box-content px-2 rounded-sm`} onChange={adjustStageBgTextWidth} />
-              <button type="submit">
-                <GoodScoreIcon />
-              </button>
-            </form>
+            <input ref={stageBgInputRef} value={stageBg} type="color" className={`bg-transparent focus:bg-white w-10 box-content px-2 rounded-sm`} onChange={changeBg} />
           </div>
         }
 
